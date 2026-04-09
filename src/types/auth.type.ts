@@ -5,9 +5,13 @@ export interface LoginResponse {
   user: User;
 }
 
-// Có thể dùng chung cho Error trả về từ file ErrorResponse bên Backend
-export interface ErrorResponse {
-  errorCode: string;
-  message: string;
-  details?: Record<string, string[]>;
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface RegisterRequest {
+  fullName: string;
+  email: string;
+  password: string;
 }

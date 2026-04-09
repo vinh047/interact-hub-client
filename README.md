@@ -1,73 +1,48 @@
-# React + TypeScript + Vite
+# InteractHub - Social Media Web Application (Frontend Client)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+InteractHub là một mạng xã hội hiện đại, cho phép người dùng kết nối, đăng bài, bình luận và chia sẻ những khoảnh khắc (Story) một cách nhanh chóng.
 
-Currently, two official plugins are available:
+Đây là phần Frontend (Client-side) của dự án bài tập lớn môn **C# and .NET Development** (Học kỳ Spring 2026) tại Đại học Sài Gòn.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🚀 Công nghệ sử dụng (Technology Stack)
 
-## React Compiler
+Dự án được xây dựng dưới dạng Single Page Application (SPA), tuân thủ nghiêm ngặt các tiêu chuẩn của môi trường Enterprise:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Core:** React 18+ & TypeScript (Strict Mode)
+- **Build Tool:** Vite (Tối ưu hóa tốc độ build)
+- **Styling & UI:** Tailwind CSS v4 (Mobile-first design) kết hợp cùng `shadcn/ui`
+- **Routing:** React Router v6
+- **State Management & API Integration:** \* Axios (Xử lý HTTP Requests & Interceptors)
+  - Context API (Quản lý Global State cho Authentication)
+- **Forms & Validation:** React Hook Form kết hợp Zod schema validation
 
-## Expanding the ESLint configuration
+## ✨ Các tính năng cốt lõi
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **🔐 Authentication & Security:** \* Form Đăng nhập/Đăng ký với validation chặt chẽ.
+  - Quản lý JWT Token qua Local Storage và Axios Interceptors.
+  - Phân quyền truy cập (Protected Routes).
+- **📱 UI/UX & Responsive Design:**
+  - Kiến trúc component tái sử dụng (Atomic Design).
+  - Giao diện Responsive 100%, tối ưu hóa cho thiết bị di động (Mobile-friendly).
+- **⚡ Hiệu năng & Trải nghiệm (Dynamic Features):**
+  - Kỹ thuật Optimistic UI Updates (Cập nhật giao diện lập tức khi thả Like/Comment).
+  - Lazy Loading và Loading Skeletons tăng trải nghiệm người dùng.
+  - Tích hợp cơ chế Debouncing cho chức năng tìm kiếm.
+  - Real-time notifications với SignalR.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 📂 Cấu trúc thư mục (Folder Structure)
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```text
+src/
+├── assets/         # Hình ảnh, SVG, fonts tĩnh
+├── components/     # UI Components
+│   ├── ui/         # Components cơ sở nguyên tử (Button, Input, Form từ shadcn/ui)
+│   └── common/     # Components lắp ráp phức tạp (PostCard, Navbar, Sidebar)
+├── contexts/       # Global State (AuthContext, ThemeContext)
+├── hooks/          # Custom Hooks (useAuth, useDebounce)
+├── layouts/        # Khung giao diện (MainLayout, AuthLayout)
+├── pages/          # Các trang chính tương ứng với Router (Home, Login, Profile)
+├── services/       # Cấu hình gọi API (api.ts, auth.service.ts)
+├── types/          # Định nghĩa TypeScript Interfaces & Types lấy từ Backend DTOs
+└── utils/          # Hàm tiện ích (errorHandler, formatDate)
 ```

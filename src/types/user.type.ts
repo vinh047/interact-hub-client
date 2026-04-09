@@ -7,7 +7,7 @@ export interface User {
   fullName: string;
   avatarUrl?: string | null;
   bio?: string | null;
-  createdAt: string; // Chú ý: DateTime C# chuyển thành string ISO
+  createdAt?: string;
 }
 
 // Dành cho trang danh sách bạn bè
