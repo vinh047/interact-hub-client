@@ -22,3 +22,17 @@ export interface ApiErrorResponse {
   // Cú pháp Record<string, string[]> của TypeScript sinh ra chính xác để trị cái này!
   details?: Record<string, string[]>;
 }
+
+// Định nghĩa cấu trúc của header X-Pagination
+export interface PaginationMetadata {
+  currentPage: number;
+  limit: number;
+  totalItems: number;
+  totalPages: number;
+}
+
+// Định nghĩa kiểu trả về tổng quát cho API có phân trang
+export interface PaginatedResponse<T> {
+  data: T[];
+  pagination: PaginationMetadata | null;
+}

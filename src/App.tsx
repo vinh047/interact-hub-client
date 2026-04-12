@@ -10,12 +10,8 @@ import ProtectedRoute from "@/components/common/ProtectedRoute";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
 import { Toaster } from "./components/ui/sonner";
+import Home from "./pages/Home";
 
-const HomeTemp = () => (
-  <div className="p-4 bg-white rounded shadow">
-    Chào mừng bạn đến với trang chủ InteractHub!
-  </div>
-);
 
 function App() {
   return (
@@ -31,12 +27,12 @@ function App() {
           {/*  CÁC TRANG PROTECTED */}
           <Route element={<ProtectedRoute />}>
             <Route element={<MainLayout />}>
-              <Route path="/" element={<HomeTemp />} />
+              <Route path="/" element={<Home />} />
             </Route>
           </Route>
 
           {/* Bắt lỗi 404 */}
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="*" element={<Navigate to="/404" replace />} />
         </Routes>
       </BrowserRouter>
       <Toaster position="top-right" richColors closeButton />
