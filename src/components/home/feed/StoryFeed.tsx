@@ -4,6 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import type { Story } from "@/types/story.type";
 import { Button } from "@/components/ui/button";
 import StoryCard from "./StoryCard";
+import UserAvatar from "@/components/common/UserAvatar";
 
 const MOCK_API_RESPONSE = {
   data: [
@@ -21,7 +22,7 @@ const MOCK_API_RESPONSE = {
     {
       id: "4f76d874-3e80-41f0-b832-7421d621aff4",
       mediaUrl:
-        "https://video.gumlet.io/688361e973359ab611403fd4/69dbbd93c6b8ccb79d9ad5b8/main.mp4",
+        "https://interacthub.blob.core.windows.net/media/stories/20260412_103346_cd55c2e7.mp4",
       createdAt: "2026-04-12T10:33:29.645",
       expiresAt: "2026-04-13T10:33:29.645",
       authorId: "b9482b9e-c269-406a-6234-08de9162145c",
@@ -32,7 +33,7 @@ const MOCK_API_RESPONSE = {
     {
       id: "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",
       mediaUrl:
-        "https://video.gumlet.io/688361e973359ab611403fd4/69dbbd93c6b8ccb79d9ad5b8/main.mp4",
+        "https://interacthub.blob.core.windows.net/media/stories/20260412_103346_cd55c2e7.mp4",
       createdAt: "2026-04-12T09:15:00.000",
       expiresAt: "2026-04-13T09:15:00.000",
       authorId: "user-3",
@@ -161,7 +162,7 @@ export default function StoryFeed() {
   }, []);
 
   return (
-    <div className="relative w-full group">
+    <div className="relative w-full">
       {showLeftBtn && (
         <button
           onClick={() => scroll("left")}
@@ -187,11 +188,12 @@ export default function StoryFeed() {
       >
         {/* 1. ITEM CỦA TÔI (Create Story) */}
         <div className="relative flex-none w-27.5 h-50 rounded-xl overflow-hidden shadow-sm cursor-pointer snap-start bg-white border border-gray-200 group">
-          <div className="h-32.5 w-full bg-gray-100">
-            <img
-              src={`https://ui-avatars.com/api/?name=${user?.fullName || "U"}&background=random&size=200`}
-              alt="My Avatar"
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+          <div className="h-32.5 w-full bg-gray-100 overflow-hidden">
+            <UserAvatar
+              src={user?.avatarUrl}
+              name={user?.fullName}
+              shape="square" 
+              className="w-full h-full group-hover:scale-105 transition-transform duration-300 text-[200%]"
             />
           </div>
           <div className="relative h-17.5 bg-white flex flex-col items-center justify-end pb-3">

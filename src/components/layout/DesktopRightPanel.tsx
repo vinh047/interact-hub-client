@@ -1,5 +1,3 @@
-import { Search } from "lucide-react";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
@@ -21,18 +19,6 @@ export default function DesktopRightPanel() {
   return (
     // overflow-y-auto để thanh này cuộn độc lập với trang chính
     <div className="flex flex-col h-full py-4 px-6 space-y-6 overflow-y-auto scrollbar-hide">
-      {/* 1. Ô Tìm kiếm (Cố định ở trên cùng) */}
-      <div className="sticky top-0 bg-white z-10 pt-2 pb-4">
-        <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
-          <Input
-            type="text"
-            placeholder="Tìm kiếm trên InteractHub..."
-            className="pl-11 h-12 bg-gray-100 border-transparent rounded-full focus-visible:bg-white focus-visible:ring-2 focus-visible:ring-blue-600 transition-all text-base"
-          />
-        </div>
-      </div>
-
       {/* 2. Khối Trending (Xu hướng) */}
       <div className="bg-gray-50 rounded-[1.5rem] p-5 border border-gray-100">
         <h3 className="text-xl font-extrabold text-gray-900 mb-4">

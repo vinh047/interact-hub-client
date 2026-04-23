@@ -17,16 +17,6 @@ export default function DesktopSidebar() {
 
   return (
     <div className="flex flex-col h-full py-6 px-4">
-      {/* 1. Logo */}
-      <Link to="/" className="flex items-center gap-3 px-4 mb-8">
-        <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-xl">
-          IH
-        </div>
-        <span className="text-xl font-extrabold tracking-tight text-gray-900 hidden lg:block">
-          InteractHub
-        </span>
-      </Link>
-
       {/* 2. Menu chính */}
       <nav className="flex-1 space-y-2">
         {menuItems.map((item) => {

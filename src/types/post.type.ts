@@ -31,3 +31,10 @@ export interface Post {
   commentCount: number;
   isLikedByCurrentUser: boolean;
 }
+
+export interface CreatePostRequest {
+  content?: string;
+  visibility: PostVisibility;
+  // Ở FE, chúng ta giữ file gốc để chuẩn bị đưa vào FormData
+  mediaFiles?: File[]; 
+}

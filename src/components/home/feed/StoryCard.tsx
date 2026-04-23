@@ -1,3 +1,4 @@
+import UserAvatar from "@/components/common/UserAvatar";
 import type { Story } from "@/types/story.type";
 import { useRef } from "react";
 
@@ -45,15 +46,14 @@ export default function StoryCard({ story }: { story: Story }) {
       )}
 
       {/* Overlay và Avatar giữ nguyên để đảm bảo UI đúng chuẩn InteractHub [cite: 202, 208] */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/60 pointer-events-none" />
+      <div className="absolute inset-0 bg-linear-to-b from-black/20 via-transparent to-black/60 pointer-events-none" />
 
-      <div className="absolute top-3 left-3 w-10 h-10 rounded-full border-2 border-blue-500 overflow-hidden bg-white z-10">
-        <img
-          src={story.authorAvatarUrl}
-          alt={story.authorName}
-          className="w-full h-full object-cover"
-        />
-      </div>
+      <UserAvatar
+        src={story.authorAvatarUrl}
+        name={story.authorName}
+        border={true}
+        className="absolute top-3 left-3 w-10 h-10 z-10"
+      />
 
       <span className="absolute bottom-3 left-2 right-2 text-white text-[12px] font-semibold leading-tight line-clamp-2 drop-shadow-md z-10">
         {story.authorName}
