@@ -1,4 +1,4 @@
-import { useState, useRef, type ChangeEvent, useEffect } from "react";
+import { useState, useRef, type ChangeEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Image as ImageIcon } from "lucide-react";
@@ -11,6 +11,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -46,14 +47,15 @@ export default function CreatePost() {
   });
   const isSubmitDisabled = !contentValue?.trim() && selectedMedia.length === 0;
 
-  // Cleanup bộ nhớ khi đóng Modal hoặc xóa ảnh
-  useEffect(() => {
-    if (!open) {
+  const handleOpenChange = (newOpen: boolean) => {
+    setOpen(newOpen);
+    if (!newOpen) {
       previews.forEach((p) => URL.revokeObjectURL(p.url));
       setPreviews([]);
-      setOpen(false);
+      setSelectedMedia([]);
+      form.reset();
     }
-  }, [open, previews]);
+  };
 
   const handleMediaChange = (e: ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
@@ -85,10 +87,8 @@ export default function CreatePost() {
     try {
       await postService.create(data);
       toast.success("Đăng bài viết thành công!");
-      setOpen(false);
-      form.reset();
-      setSelectedMedia([]);
-      setPreviews([]);
+
+      handleOpenChange(false);
     } catch (error: unknown) {
       const apiError = error as ApiErrorResponse;
       toast.error(apiError.message || "Có lỗi xảy ra khi đăng bài.");
@@ -99,11 +99,13 @@ export default function CreatePost() {
 
   return (
     <div className="w-full">
-      <Dialog open={open} onOpenChange={setOpen}>
-        <PostTriggerBar
-          user={user}
-          onMediaClick={() => fileInputRef.current?.click()}
-        />
+      <Dialog open={open} onOpenChange={handleOpenChange}>
+        <DialogTrigger asChild>
+          <PostTriggerBar
+            user={user}
+            onMediaClick={() => fileInputRef.current?.click()}
+          />
+        </DialogTrigger>
 
         <DialogContent className="sm:max-w-125 p-0 gap-0 bg-white border-none shadow-2xl overflow-hidden flex flex-col max-h-[95vh]">
           <DialogHeader className="p-4 border-b border-gray-100 shrink-0">
