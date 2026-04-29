@@ -1,29 +1,56 @@
+// StoryCard.tsx
 import UserAvatar from "@/components/common/UserAvatar";
 import type { Story } from "@/types/story.type";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 
-export default function StoryCard({ story }: { story: Story }) {
+interface StoryCardProps {
+  story: Story;
+}
+
+export default function StoryCard({ story }: StoryCardProps) {
+  // Kiểm tra định dạng video
   const isVideo = story.mediaUrl.toLowerCase().endsWith(".mp4");
-  const videoRef = useRef<HTMLVideoElement>(null);
 
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const playTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Logic phát video khi hover
   const handleMouseEnter = () => {
     if (isVideo && videoRef.current) {
-      // Khi rê chuột vào -> Chạy video
+      if (playTimeoutRef.current) clearTimeout(playTimeoutRef.current);
       videoRef.current.play().catch(() => {});
+      playTimeoutRef.current = setTimeout(() => {
+        if (videoRef.current) {
+          videoRef.current.pause();
+          videoRef.current.currentTime = 0;
+        }
+      }, 5000);
     }
   };
 
   const handleMouseLeave = () => {
     if (isVideo && videoRef.current) {
-      // Khi bỏ chuột ra -> Dừng video và quay về giây đầu tiên (làm ảnh nền)
+      if (playTimeoutRef.current) {
+        clearTimeout(playTimeoutRef.current);
+        playTimeoutRef.current = null;
+      }
       videoRef.current.pause();
       videoRef.current.currentTime = 0;
     }
   };
 
+  useEffect(() => {
+    return () => {
+      if (playTimeoutRef.current) clearTimeout(playTimeoutRef.current);
+    };
+  }, []);
+
   return (
-    <div
-      className="relative flex-none w-27.5 h-50 rounded-xl overflow-hidden shadow-sm cursor-pointer snap-start group bg-gray-900"
+    <Link
+      to={`/stories/${story.id}`}
+      // Khung chứa tỉ lệ 9:16 với nền đen để bù đắp khoảng trống cho video ngang
+      className="relative flex-none w-27.5 h-50 rounded-xl overflow-hidden shadow-sm bg-black border border-gray-800 cursor-pointer snap-start group"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
@@ -33,31 +60,29 @@ export default function StoryCard({ story }: { story: Story }) {
           src={story.mediaUrl}
           muted
           playsInline
-          loop // Cho phép lặp liên tục khi đang hover
-          preload="metadata" // Tải trước thông tin để hiện được frame đầu làm ảnh nền
-          className="absolute inset-0 w-full h-full object-cover group-hover:scale-102 transition-transform duration-500"
+          preload="metadata"
+          className="absolute inset-0 w-full h-full object-contain transition-transform duration-500 hover:scale-105"
         />
       ) : (
         <img
           src={story.mediaUrl}
           alt={story.authorName}
-          className="absolute inset-0 w-full h-full object-cover group-hover:scale-102 transition-transform duration-500"
+          className="absolute inset-0 w-full h-full object-contain transition-transform duration-500 hover:scale-105"
         />
       )}
 
-      {/* Overlay và Avatar giữ nguyên để đảm bảo UI đúng chuẩn InteractHub [cite: 202, 208] */}
       <div className="absolute inset-0 bg-linear-to-b from-black/20 via-transparent to-black/60 pointer-events-none" />
 
       <UserAvatar
         src={story.authorAvatarUrl}
         name={story.authorName}
         border={true}
-        className="absolute top-3 left-3 w-10 h-10 z-10"
+        className="absolute top-3 left-3 w-10 h-10 z-10 border-2 border-blue-600 shadow-lg"
       />
 
       <span className="absolute bottom-3 left-2 right-2 text-white text-[12px] font-semibold leading-tight line-clamp-2 drop-shadow-md z-10">
         {story.authorName}
       </span>
-    </div>
+    </Link>
   );
 }

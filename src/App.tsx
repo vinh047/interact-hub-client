@@ -11,7 +11,8 @@ import Login from "@/pages/Login";
 import Register from "@/pages/Register";
 import { Toaster } from "./components/ui/sonner";
 import Home from "./pages/Home";
-
+import CreateStoryPage from "./pages/story/CreateStoryPage";
+import StoryDetailPage from "./pages/story/StoryDetailPage";
 
 function App() {
   return (
@@ -29,6 +30,8 @@ function App() {
             <Route element={<MainLayout />}>
               <Route path="/" element={<Home />} />
             </Route>
+            <Route path="/story/create" element={<CreateStoryPage />} />
+            <Route path="/stories/:id" element={<StoryDetailPage />} />
           </Route>
 
           {/* Bắt lỗi 404 */}

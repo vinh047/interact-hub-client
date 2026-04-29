@@ -1,6 +1,6 @@
 import type { PaginatedResponse } from "@/types/common.type";
 import api from "./api";
-import type { Story } from "@/types/story.type";
+import type { CreateStoryRequest, Story } from "@/types/story.type";
 
 export const storyService = {
   getFeedStories: async (
@@ -14,6 +14,17 @@ export const storyService = {
     return response;
   },
 
-  // Nơi đây sau này có thể viết thêm hàm:
-  // createStory: async (formData) => {...}
+  create: async (data: CreateStoryRequest): Promise<Story> => {
+    const formData = new FormData();
+
+    formData.append("MediaFile", data.mediaFile);
+
+    const response = await api.post<unknown, Story>("/story", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    return response;
+  },
 };
