@@ -1,19 +1,9 @@
 import type { PostVisibility } from "./enum.type";
-import type { User } from "./user.type";
 
 export interface PostMedia {
   id: string;
   mediaUrl: string;
   mediaType: string;
-}
-
-export interface Comment {
-  id: string;
-  postId: string;
-  userId: string;
-  content: string;
-  createdAt: string;
-  user: User; // Người comment
 }
 
 export interface Post {
@@ -26,7 +16,6 @@ export interface Post {
   authorAvatar?: string;
   mediaFiles: PostMedia[];
 
-  // Các con số thống kê lấy từ DTO của bạn
   likeCount: number;
   commentCount: number;
   isLikedByCurrentUser: boolean;
@@ -35,6 +24,12 @@ export interface Post {
 export interface CreatePostRequest {
   content?: string;
   visibility: PostVisibility;
-  // Ở FE, chúng ta giữ file gốc để chuẩn bị đưa vào FormData
-  mediaFiles?: File[]; 
+  mediaFiles?: File[];
+}
+
+export interface UpdatePostRequest {
+  content?: string;
+  visibility?: PostVisibility;
+  newMediaFiles?: File[];
+  deletedMediaIds?: string[];
 }
