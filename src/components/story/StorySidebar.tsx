@@ -1,5 +1,5 @@
 import { X } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import UserAvatar from "@/components/common/UserAvatar";
 import { cn } from "@/lib/utils";
 import { formatRelativeTime } from "@/utils/date";
@@ -41,9 +41,9 @@ export default function StorySidebar({
           </div>
         </div>
         <div className="flex gap-3 text-sm font-semibold text-blue-600">
-          <span className="cursor-pointer hover:underline">Kho lưu trữ</span>
-          <span className="text-gray-300">·</span>
-          <span className="cursor-pointer hover:underline">Cài đặt</span>
+          <Link to={`/profile/${myGroup?.authorId}?tab=archive`}>
+            <span className="cursor-pointer hover:underline">Kho lưu trữ</span>
+          </Link>
         </div>
       </div>
 

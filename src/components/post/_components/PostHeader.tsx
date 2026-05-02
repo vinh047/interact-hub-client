@@ -20,6 +20,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const VISIBILITY_MAP: Record<
   PostVisibility,
@@ -65,15 +66,19 @@ export default function PostHeader({
     <div className="p-4 flex items-center justify-between">
       {/* THÔNG TIN NGƯỜI DÙNG */}
       <div className="flex items-center gap-3">
-        <UserAvatar
-          src={post.authorAvatar}
-          name={post.authorName}
-          className="w-10 h-10"
-        />
+        <Link to={`/profile/${post.authorId}`}>
+          <UserAvatar
+            src={post.authorAvatar}
+            name={post.authorName}
+            className="w-10 h-10"
+          />
+        </Link>
         <div className="flex flex-col">
-          <span className="font-bold text-[15px] hover:underline cursor-pointer text-gray-900">
-            {post.authorName}
-          </span>
+          <Link to={`/profile/${post.authorId}`}>
+            <span className="font-bold text-[15px] hover:underline cursor-pointer text-gray-900">
+              {post.authorName}
+            </span>
+          </Link>
           <div
             className="flex items-center gap-1.5 text-gray-500 text-[12px]"
             title={vConfig.label}

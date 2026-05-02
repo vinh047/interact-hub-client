@@ -1,6 +1,12 @@
 import type { PaginatedResponse } from "@/types/common.type";
 import api from "./api";
-import type { CreatePostRequest, Post, UpdatePostRequest } from "@/types/post.type";
+import type {
+  CreatePostRequest,
+  Post,
+  PostMediaResponse,
+  PostQueryParameters,
+  UpdatePostRequest,
+} from "@/types/post.type";
 
 export const postService = {
   create: async (data: CreatePostRequest): Promise<Post> => {
@@ -45,15 +51,12 @@ export const postService = {
     await api.delete(`/post/${postId}`);
   },
 
-  updatePost: async (
-    postId: string,
-    data: UpdatePostRequest,
-  ) => {
+  updatePost: async (postId: string, data: UpdatePostRequest) => {
     const formData = new FormData();
     if (data.content) {
       formData.append("content", data.content);
     }
-    
+
     if (data.visibility) {
       formData.append("visibility", data.visibility.toString());
     }
@@ -74,5 +77,29 @@ export const postService = {
   reportPost: async (postId: string, reason: string) => {
     const response = await api.post(`/posts/${postId}/report`, { reason });
     return response.data;
+  },
+
+  getUserPosts: async (
+    targetUserId: string,
+    params: PostQueryParameters,
+  ): Promise<PaginatedResponse<Post>> => {
+    const response = await api.get<unknown, PaginatedResponse<Post>>(
+      `/post/user/${targetUserId}`,
+      { params },
+    );
+    return response;
+  },
+
+  getUserMedia: async (
+    userId: string,
+    params: { page?: number; limit?: number },
+  ): Promise<PaginatedResponse<PostMediaResponse>> => {
+    const response = await api.get<
+      unknown,
+      PaginatedResponse<PostMediaResponse>
+    >(`/post/media/${userId}`, {
+      params: params,
+    });
+    return response;
   },
 };

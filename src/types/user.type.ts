@@ -2,12 +2,13 @@ import type { FriendshipStatus } from "./enum.type";
 
 export interface User {
   id: string;
-  userName: string;
-  email: string;
   fullName: string;
   avatarUrl?: string | null;
   bio?: string | null;
   createdAt?: string;
+  friendCount: number;
+  friendshipStatus?: FriendshipStatus;
+  isRequester?: boolean;
 }
 
 // Dành cho trang danh sách bạn bè

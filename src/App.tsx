@@ -23,6 +23,8 @@ import StoryDetailPage from "./pages/story/StoryDetailPage";
 import PostModal from "./components/post/PostModal";
 import { useEffect } from "react";
 import { toast } from "sonner";
+import ProfilePage from "./pages/ProfilePage";
+import HeaderOnlyLayout from "./layouts/HeaderOnlyLayout";
 
 function AppRoutes() {
   const location = useLocation();
@@ -50,6 +52,9 @@ function AppRoutes() {
         <Route element={<ProtectedRoute />}>
           <Route element={<MainLayout />}>
             <Route path="/" element={<Home />} />
+          </Route>
+          <Route element={<HeaderOnlyLayout />}>
+            <Route path="/profile/:id" element={<ProfilePage />} />
           </Route>
 
           <Route path="/story/create" element={<CreateStoryPage />} />

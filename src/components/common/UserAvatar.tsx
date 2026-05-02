@@ -25,7 +25,7 @@ const stringToColor = (name: string) => {
   for (let i = 0; i < name.length; i++) {
     hash = name.charCodeAt(i) + ((hash << 5) - hash);
   }
-  
+
   const index = Math.abs(hash) % colors.length;
   return colors[index];
 };
@@ -36,6 +36,7 @@ interface UserAvatarProps {
   className?: string;
   border?: boolean;
   shape?: "circle" | "square";
+  fontSize?: string;
 }
 
 export default function UserAvatar({
@@ -44,6 +45,7 @@ export default function UserAvatar({
   className,
   border,
   shape = "circle",
+  fontSize = "text-[80%]",
 }: UserAvatarProps) {
   const initials = getInitials(name);
   const bgColor = stringToColor(name);
@@ -68,8 +70,9 @@ export default function UserAvatar({
       <AvatarFallback
         style={{ backgroundColor: bgColor }}
         className={cn(
-          "text-white font-bold text-[80%] uppercase",
+          "text-white font-bold uppercase",
           shape === "circle" ? "rounded-full" : "rounded-none",
+          fontSize,
         )}
       >
         {initials}

@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 
 import CommentMenu from "./_components/CommentMenu";
 import CommentEditForm from "./_components/CommentEditForm";
+import { Link } from "react-router-dom";
 
 interface CommentItemProps {
   comment: Comment;
@@ -120,11 +121,13 @@ export default function CommentItem({
   return (
     <div className="flex gap-2 mb-4 group w-full relative">
       {/* AVATAR */}
-      <UserAvatar
-        src={currentComment.authorAvatarUrl}
-        name={currentComment.authorName}
-        className="w-8 h-8 mt-1 shrink-0"
-      />
+      <Link to={`/profile/${currentComment.authorId}`}>
+        <UserAvatar
+          src={currentComment.authorAvatarUrl}
+          name={currentComment.authorName}
+          className="w-8 h-8 mt-1 shrink-0"
+        />
+      </Link>
 
       <div className="flex flex-col w-full min-w-0">
         <div className="flex items-start gap-2">
@@ -139,9 +142,11 @@ export default function CommentItem({
           ) : (
             <>
               <div className="bg-gray-100 rounded-2xl px-3 py-2 max-w-fit">
-                <span className="font-semibold text-[13px] text-gray-800 mr-2 cursor-pointer hover:underline">
-                  {currentComment.authorName}
-                </span>
+                <Link to={`/profile/${currentComment.authorId}`}>
+                  <span className="font-semibold text-[13px] text-gray-800 mr-2 cursor-pointer hover:underline">
+                    {currentComment.authorName}
+                  </span>
+                </Link>
                 <span className="text-[14px] text-gray-800 wrap-break-word whitespace-pre-wrap">
                   {currentComment.content}
                 </span>

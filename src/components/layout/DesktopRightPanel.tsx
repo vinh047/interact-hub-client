@@ -1,14 +1,37 @@
-import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { Loader2 } from "lucide-react";
+import { hashtagService } from "@/services/hashtag.service";
+
+interface TrendingTag {
+  id: string;
+  name: string;
+  trendingScore: number;
+}
 
 export default function DesktopRightPanel() {
-  // Dữ liệu giả (Mock data) - Sau này sẽ gọi API từ C# thay thế
-  const trendingTags = [
-    { tag: "#DotNet8", posts: "24.5K" },
-    { tag: "#ReactJS", posts: "12.3K" },
-    { tag: "#InteractHub", posts: "8.9K" },
-    { tag: "#SGU", posts: "5.2K" },
-  ];
+  const [trendingTags, setTrendingTags] = useState<TrendingTag[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Hàm fomat số lượng: 1200 -> 1.2K
+  const formatScore = (score: number) => {
+    if (score >= 1000) return (score / 1000).toFixed(1) + "K";
+    return score.toString();
+  };
+
+  useEffect(() => {
+    const fetchTrending = async () => {
+      try {
+        const data = await hashtagService.getTrendingHashtags();
+        setTrendingTags(data);
+      } catch (error) {
+        console.error("Lỗi khi tải trending hashtags:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchTrending();
+  }, []);
 
   const friendSuggestions = [
     { name: "Nguyễn Văn A", mutual: "12 bạn chung", initials: "NA" },
@@ -17,33 +40,44 @@ export default function DesktopRightPanel() {
   ];
 
   return (
-    // overflow-y-auto để thanh này cuộn độc lập với trang chính
     <div className="flex flex-col h-full py-4 px-6 space-y-6 overflow-y-auto scrollbar-hide">
-      {/* 2. Khối Trending (Xu hướng) */}
+      {/* KHỐI TRENDING (ĐÃ ĐƯỢC GẮN API) */}
       <div className="bg-gray-50 rounded-[1.5rem] p-5 border border-gray-100">
         <h3 className="text-xl font-extrabold text-gray-900 mb-4">
           Đang thịnh hành
         </h3>
-        <div className="space-y-4">
-          {trendingTags.map((item) => (
-            <Link
-              to={`/explore?tag=${item.tag.replace("#", "")}`}
-              key={item.tag}
-              className="block group"
-            >
-              <p className="text-sm font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
-                {item.tag}
-              </p>
-              <p className="text-xs text-gray-500 mt-0.5">
-                {item.posts} bài viết
-              </p>
-            </Link>
-          ))}
-        </div>
+
+        {isLoading ? (
+          <div className="flex justify-center py-4">
+            <Loader2 className="w-6 h-6 animate-spin text-gray-400" />
+          </div>
+        ) : trendingTags.length > 0 ? (
+          <div className="space-y-4">
+            {trendingTags.map((item) => (
+              <Link
+                // Trỏ thẳng về trang Tìm Kiếm Tổng Hợp mà chúng ta vừa thống nhất
+                to={`/search?q=${item.name}&type=hashtag`}
+                key={item.id}
+                className="block group"
+              >
+                <p className="text-sm font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
+                  #{item.name}
+                </p>
+                <p className="text-xs text-gray-500 mt-0.5">
+                  {formatScore(item.trendingScore)} lượt tương tác
+                </p>
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <p className="text-sm text-gray-500 text-center py-2">
+            Chưa có xu hướng nào
+          </p>
+        )}
       </div>
 
-      {/* 3. Khối Gợi ý kết bạn */}
-      <div className="bg-gray-50 rounded-[1.5rem] p-5 border border-gray-100">
+      {/* KHỐI GỢI Ý KẾT BẠN (Tạm giữ nguyên Mock data) */}
+      {/* <div className="bg-gray-50 rounded-[1.5rem] p-5 border border-gray-100">
         <h3 className="text-xl font-extrabold text-gray-900 mb-4">
           Gợi ý cho bạn
         </h3>
@@ -71,21 +105,15 @@ export default function DesktopRightPanel() {
             </div>
           ))}
         </div>
-      </div>
+      </div> */}
 
-      {/* 4. Footer Mini (Bản quyền) */}
-      <div className="text-[13px] text-gray-400 flex flex-wrap gap-x-3 gap-y-1 px-2 pb-8">
-        <a href="#" className="hover:underline">
-          Bảo mật
-        </a>
-        <a href="#" className="hover:underline">
-          Điều khoản
-        </a>
-        <a href="#" className="hover:underline">
-          Cookie
-        </a>
+      {/* Footer Mini */}
+      {/* <div className="text-[13px] text-gray-400 flex flex-wrap gap-x-3 gap-y-1 px-2 pb-8">
+        <a href="#" className="hover:underline">Bảo mật</a>
+        <a href="#" className="hover:underline">Điều khoản</a>
+        <a href="#" className="hover:underline">Cookie</a>
         <span>© 2026 InteractHub SGU</span>
-      </div>
+      </div> */}
     </div>
   );
 }

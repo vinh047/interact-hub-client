@@ -12,6 +12,7 @@ import UserAvatar from "@/components/common/UserAvatar";
 import { formatRelativeTime } from "@/utils/date";
 import type { GroupedStory, Story } from "@/types/story.type";
 import { Button } from "../ui/button";
+import { Link } from "react-router-dom";
 
 interface StoryViewerProps {
   currentAuthor: GroupedStory;
@@ -104,16 +105,20 @@ export default function StoryViewer({
 
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <UserAvatar
-                src={currentAuthor.authorAvatarUrl}
-                name={currentAuthor.authorName}
-                border
-                className="w-10 h-10 shadow-sm"
-              />
+              <Link to={`/profile/${currentAuthor.authorId}`}>
+                <UserAvatar
+                  src={currentAuthor.authorAvatarUrl}
+                  name={currentAuthor.authorName}
+                  border
+                  className="w-10 h-10 shadow-sm"
+                />
+              </Link>
               <div className="flex flex-col">
-                <span className="font-bold text-[15px] drop-shadow-lg text-white whitespace-nowrap">
-                  {currentAuthor.authorName}
-                </span>
+                <Link to={`/profile/${currentAuthor.authorId}`}>
+                  <span className="font-bold text-[15px] drop-shadow-lg text-white whitespace-nowrap">
+                    {currentAuthor.authorName}
+                  </span>
+                </Link>
                 <span className="text-[12px] opacity-80 drop-shadow-lg text-white/90">
                   {formatRelativeTime(currentStory.createdAt)}
                 </span>

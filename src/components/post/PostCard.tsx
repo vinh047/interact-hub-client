@@ -13,6 +13,7 @@ import ReportPostModal from "@/components/post/ReportPostModal";
 import PostHeader from "./_components/PostHeader";
 import PostMedia from "./_components/PostMedia";
 import PostActions from "./_components/PostActions";
+import FormattedContent from "../common/FormattedContent";
 
 export default function PostCard({ post: initialPost }: { post: Post }) {
   const [post, setPost] = useState<Post>(initialPost);
@@ -121,7 +122,7 @@ export default function PostCard({ post: initialPost }: { post: Post }) {
       {/* 2. Body Text */}
       {post.content && (
         <div className="px-4 pb-3 text-[15px] leading-relaxed text-gray-800 whitespace-pre-wrap">
-          {post.content}
+          <FormattedContent content={post.content} />
         </div>
       )}
 

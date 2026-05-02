@@ -1,6 +1,10 @@
 import type { PaginatedResponse } from "@/types/common.type";
 import api from "./api";
-import type { CreateStoryRequest, Story } from "@/types/story.type";
+import type {
+  CreateStoryRequest,
+  Story,
+  StoryResponse,
+} from "@/types/story.type";
 
 export const storyService = {
   getFeedStories: async (
@@ -25,6 +29,19 @@ export const storyService = {
       },
     });
 
+    return response;
+  },
+
+  getStoryArchive: async (params: {
+    page?: number;
+    limit?: number;
+  }): Promise<PaginatedResponse<StoryResponse>> => {
+    const response = await api.get<unknown, PaginatedResponse<StoryResponse>>(
+      "/story/archive",
+      {
+        params,
+      },
+    );
     return response;
   },
 };
