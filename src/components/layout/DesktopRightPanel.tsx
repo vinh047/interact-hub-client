@@ -33,11 +33,11 @@ export default function DesktopRightPanel() {
     fetchTrending();
   }, []);
 
-  const friendSuggestions = [
-    { name: "Nguyễn Văn A", mutual: "12 bạn chung", initials: "NA" },
-    { name: "Trần Thị B", mutual: "5 bạn chung", initials: "TB" },
-    { name: "Lê Hoàng C", mutual: "2 bạn chung", initials: "LC" },
-  ];
+  // const friendSuggestions = [
+  //   { name: "Nguyễn Văn A", mutual: "12 bạn chung", initials: "NA" },
+  //   { name: "Trần Thị B", mutual: "5 bạn chung", initials: "TB" },
+  //   { name: "Lê Hoàng C", mutual: "2 bạn chung", initials: "LC" },
+  // ];
 
   return (
     <div className="flex flex-col h-full py-2 px-2 space-y-6 overflow-y-auto custom-scrollbar pb-20">
