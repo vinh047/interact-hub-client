@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Loader2 } from "lucide-react";
+import { Loader2, TrendingUp } from "lucide-react";
 import { hashtagService } from "@/services/hashtag.service";
 
 interface TrendingTag {
@@ -40,79 +40,75 @@ export default function DesktopRightPanel() {
   ];
 
   return (
-    <div className="flex flex-col h-full py-4 px-6 space-y-6 overflow-y-auto scrollbar-hide">
-      {/* KHỐI TRENDING (ĐÃ ĐƯỢC GẮN API) */}
-      <div className="bg-gray-50 rounded-[1.5rem] p-5 border border-gray-100">
-        <h3 className="text-xl font-extrabold text-gray-900 mb-4">
-          Đang thịnh hành
-        </h3>
+    <div className="flex flex-col h-full py-2 px-2 space-y-6 overflow-y-auto custom-scrollbar pb-20">
+      {/* KHỐI TRENDING */}
+      <div className="bg-white rounded-2xl p-5 border border-gray-200 shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
+        <div className="flex items-center gap-2 mb-4">
+          <TrendingUp className="w-5 h-5 text-blue-600" />
+          <h3 className="text-lg font-extrabold text-gray-900 tracking-tight">
+            Đang thịnh hành
+          </h3>
+        </div>
 
         {isLoading ? (
-          <div className="flex justify-center py-4">
-            <Loader2 className="w-6 h-6 animate-spin text-gray-400" />
+          <div className="flex justify-center py-6">
+            <Loader2 className="w-6 h-6 animate-spin text-blue-600" />
           </div>
         ) : trendingTags.length > 0 ? (
-          <div className="space-y-4">
+          <div className="flex flex-col mt-2">
             {trendingTags.map((item) => (
               <Link
-                // Trỏ thẳng về trang Tìm Kiếm Tổng Hợp mà chúng ta vừa thống nhất
-                to={`/search?q=${item.name}&type=hashtag`}
+                to={`/search?q=${item.name}&type=posts`}
                 key={item.id}
-                className="block group"
+                className="flex flex-col py-2.5 px-3 -mx-3 rounded-xl hover:bg-gray-50 transition-colors group"
               >
-                <p className="text-sm font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
+                <p className="text-[15px] font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
                   #{item.name}
                 </p>
-                <p className="text-xs text-gray-500 mt-0.5">
+                <p className="text-[13px] text-gray-500 mt-0.5 font-medium">
                   {formatScore(item.trendingScore)} lượt tương tác
                 </p>
               </Link>
             ))}
           </div>
         ) : (
-          <p className="text-sm text-gray-500 text-center py-2">
-            Chưa có xu hướng nào
-          </p>
+          <div className="text-center py-6">
+            <p className="text-[14px] text-gray-500 font-medium">
+              Chưa có xu hướng nào
+            </p>
+          </div>
         )}
       </div>
 
-      {/* KHỐI GỢI Ý KẾT BẠN (Tạm giữ nguyên Mock data) */}
-      {/* <div className="bg-gray-50 rounded-[1.5rem] p-5 border border-gray-100">
-        <h3 className="text-xl font-extrabold text-gray-900 mb-4">
+      {/* KHỐI GỢI Ý KẾT BẠN (Đã tinh chỉnh CSS) */}
+      {/* <div className="bg-white rounded-2xl p-5 border border-gray-200 shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
+        <h3 className="text-lg font-extrabold text-gray-900 mb-4 tracking-tight">
           Gợi ý cho bạn
         </h3>
-        <div className="space-y-4">
+        <div className="flex flex-col gap-4">
           {friendSuggestions.map((user, idx) => (
-            <div key={idx} className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-linear-to-tr from-blue-500 to-cyan-400 flex items-center justify-center text-white font-bold text-sm">
+            <div key={idx} className="flex items-center justify-between group">
+              <div className="flex items-center gap-3 overflow-hidden">
+                <div className="w-10 h-10 shrink-0 rounded-full bg-gradient-to-tr from-blue-500 to-cyan-400 flex items-center justify-center text-white font-bold text-sm shadow-sm">
                   {user.initials}
                 </div>
-                <div className="flex flex-col">
-                  <span className="text-sm font-bold text-gray-900 hover:underline cursor-pointer line-clamp-1">
+                <div className="flex flex-col min-w-0">
+                  <span className="text-[14px] font-bold text-gray-900 group-hover:underline cursor-pointer truncate">
                     {user.name}
                   </span>
-                  <span className="text-xs text-gray-500">{user.mutual}</span>
+                  <span className="text-[12px] text-gray-500 truncate">{user.mutual}</span>
                 </div>
               </div>
               <Button
                 variant="outline"
                 size="sm"
-                className="rounded-full h-8 px-4 text-xs font-bold border-gray-300 hover:bg-gray-200"
+                className="shrink-0 rounded-full h-8 px-4 text-xs font-bold border-gray-300 hover:bg-gray-100 transition-colors ml-2"
               >
                 Thêm
               </Button>
             </div>
           ))}
         </div>
-      </div> */}
-
-      {/* Footer Mini */}
-      {/* <div className="text-[13px] text-gray-400 flex flex-wrap gap-x-3 gap-y-1 px-2 pb-8">
-        <a href="#" className="hover:underline">Bảo mật</a>
-        <a href="#" className="hover:underline">Điều khoản</a>
-        <a href="#" className="hover:underline">Cookie</a>
-        <span>© 2026 InteractHub SGU</span>
       </div> */}
     </div>
   );

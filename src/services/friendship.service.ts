@@ -2,6 +2,13 @@ import type { PaginatedResponse } from "@/types/common.type";
 import api from "./api";
 import type { FriendUserResponse } from "@/types/friendship.type";
 
+interface FriendshipParams {
+  userId?: string;
+  page?: number;
+  limit?: number;
+  search?: string;
+}
+
 export const friendshipService = {
   getFriends: async (params: {
     page?: number;
@@ -32,5 +39,13 @@ export const friendshipService = {
   removeFriendship: async (otherUserId: string) => {
     return await api.delete(`/friendship/${otherUserId}`);
   },
-  
+
+  getPendingRequests: async (params: FriendshipParams) => {
+    return api.get<unknown, PaginatedResponse<FriendUserResponse>>(
+      "/friendship/requests/received",
+      {
+        params,
+      },
+    );
+  },
 };

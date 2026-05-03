@@ -13,7 +13,7 @@ export default function FormattedContent({ content }: { content: string }) {
           return (
             <Link
               key={index}
-              to={`/hashtag/${tag}`}
+              to={`/search?q=${tag}&type=posts`}
               className="text-blue-600 hover:underline font-medium relative z-10"
               onClick={(e) => e.stopPropagation()}
             >
