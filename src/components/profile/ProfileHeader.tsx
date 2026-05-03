@@ -212,7 +212,7 @@ export default function ProfileHeader({
                     variant="secondary"
                     className="bg-gray-200 hover:bg-gray-300 text-gray-900 font-semibold h-9"
                   >
-                    <UserMinus className="w-4 h-4 mr-1.5" /> Hủy lời mời
+                    <UserMinus className="w-4 h-4 mr-1.5" /> Hủy yêu cầu
                   </Button>
                 ) : (
                   // HỌ LÀ NGƯỜI GỬI: Hiện nút Xác nhận & Xóa

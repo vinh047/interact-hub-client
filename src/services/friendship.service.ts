@@ -18,18 +18,19 @@ export const friendshipService = {
     return response;
   },
 
-  // Gửi lời mời kết bạn[cite: 11]
+  // Gửi lời mời kết bạn
   sendRequest: async (targetUserId: string) => {
     return await api.post(`/friendship/request/${targetUserId}`);
   },
 
-  // Chấp nhận lời mời kết bạn[cite: 11]
+  // Chấp nhận lời mời kết bạn
   acceptRequest: async (requesterId: string) => {
     return await api.put(`/friendship/accept/${requesterId}`);
   },
 
-  // Hủy kết bạn hoặc lời mời[cite: 11]
+  // Hủy kết bạn hoặc lời mời
   removeFriendship: async (otherUserId: string) => {
     return await api.delete(`/friendship/${otherUserId}`);
   },
+  
 };

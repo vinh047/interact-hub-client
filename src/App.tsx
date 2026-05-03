@@ -25,6 +25,7 @@ import { useEffect } from "react";
 import { toast } from "sonner";
 import ProfilePage from "./pages/ProfilePage";
 import HeaderOnlyLayout from "./layouts/HeaderOnlyLayout";
+import SearchPage from "./pages/SearchPage";
 
 function AppRoutes() {
   const location = useLocation();
@@ -55,6 +56,7 @@ function AppRoutes() {
           </Route>
           <Route element={<HeaderOnlyLayout />}>
             <Route path="/profile/:id" element={<ProfilePage />} />
+            <Route path="/search" element={<SearchPage />} />
           </Route>
 
           <Route path="/story/create" element={<CreateStoryPage />} />
