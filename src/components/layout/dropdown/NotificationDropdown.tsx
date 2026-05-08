@@ -1,12 +1,8 @@
-// src/components/layout/NotificationDropdown.tsx
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Bell, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import UserAvatar from "../../common/UserAvatar";
-
-// 1. Import hàm xử lý thời gian từ helper date.ts
-
 import { notificationService } from "@/services/notification.service";
 import type { Notification as AppNotification } from "@/types/notification.type";
 import { formatRelativeTime } from "@/utils/date";
@@ -25,10 +21,8 @@ export default function NotificationDropdown({
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Xử lý click ra ngoài để đóng dropdown
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -42,15 +36,12 @@ export default function NotificationDropdown({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Fetch dữ liệu
   const fetchNotifications = async (pageNum: number) => {
     if (isLoading || !hasMore) return;
-
     setIsLoading(true);
     try {
       const res = await notificationService.getNotifications(pageNum, 10);
       const newItems = res.data as AppNotification[];
-
       if (newItems.length === 0) {
         setHasMore(false);
       } else {
@@ -69,15 +60,11 @@ export default function NotificationDropdown({
     }
   };
 
-  // Mở dropdown & đánh dấu đã đọc
   const handleToggle = async () => {
     const willOpen = !isOpen;
     setIsOpen(willOpen);
-
     if (willOpen) {
-      if (notifications.length === 0) {
-        fetchNotifications(1);
-      }
+      if (notifications.length === 0) fetchNotifications(1);
       if (unreadCount > 0) {
         try {
           setUnreadCount(0);
@@ -90,7 +77,6 @@ export default function NotificationDropdown({
     }
   };
 
-  // Bắt sự kiện cuộn tới đáy
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const { scrollTop, clientHeight, scrollHeight } = e.currentTarget;
     if (
@@ -105,15 +91,13 @@ export default function NotificationDropdown({
   };
 
   const getNotificationLink = (notif: AppNotification) => {
-    if (notif.type === "FriendRequest" || notif.type === "FriendAccept") {
+    if (notif.type === "FriendRequest" || notif.type === "FriendAccept")
       return `/profile/${notif.issuerId}`;
-    }
     if (
       (notif.type === "Like" || notif.type === "Comment") &&
       notif.referenceId
-    ) {
+    )
       return `/post/${notif.referenceId}`;
-    }
     return "#";
   };
 
@@ -123,7 +107,11 @@ export default function NotificationDropdown({
         onClick={handleToggle}
         variant="ghost"
         size="icon"
-        className={`w-10 h-10 rounded-full relative hidden sm:flex transition-colors ${isOpen ? "bg-blue-50 text-blue-600" : "bg-gray-100 text-gray-900 hover:bg-gray-200"}`}
+        className={`w-10 h-10 rounded-full relative flex items-center justify-center transition-colors ${
+          isOpen
+            ? "bg-blue-50 text-blue-600"
+            : "bg-gray-100 text-gray-900 hover:bg-gray-200"
+        }`}
       >
         <Bell className="w-5 h-5" />
         {unreadCount > 0 && (
@@ -134,15 +122,15 @@ export default function NotificationDropdown({
       </Button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-90 bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.15)] border border-gray-200 z-50 overflow-hidden flex flex-col">
+        <div className="absolute -right-2 sm:right-0 mt-2 w-[320px] sm:w-90 bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.15)] border border-gray-200 z-50 overflow-hidden flex flex-col">
           <div className="p-4 flex justify-between items-center bg-white z-10 border-b">
-            <h3 className="font-bold text-2xl text-gray-900 tracking-tight">
+            <h3 className="font-bold text-xl sm:text-2xl text-gray-900 tracking-tight">
               Thông báo
             </h3>
           </div>
 
           <div
-            className="overflow-y-auto max-h-112.5 overscroll-contain pb-2 custom-scrollbar"
+            className="overflow-y-auto max-h-[60vh] sm:max-h-112.5 overscroll-contain pb-2 custom-scrollbar"
             onScroll={handleScroll}
           >
             {notifications.length === 0 && !isLoading ? (
@@ -167,16 +155,15 @@ export default function NotificationDropdown({
                   <UserAvatar
                     src={notif.issuerAvatar || undefined}
                     name={notif.issuerName || "User"}
-                    className="w-14 h-14 shrink-0 shadow-sm border border-gray-100"
+                    className="w-12 h-12 sm:w-14 sm:h-14 shrink-0 shadow-sm border border-gray-100"
                   />
                   <div className="flex-1 min-w-0 pt-0.5">
-                    <p className="text-[15px] text-gray-900 leading-[1.3] line-clamp-3">
+                    <p className="text-[14px] sm:text-[15px] text-gray-900 leading-[1.3] line-clamp-3">
                       <span className="font-semibold">{notif.issuerName}</span>{" "}
                       {notif.content}
                     </p>
-                    {/* 2. Sử dụng hàm từ file date.ts ở đây */}
                     <span
-                      className={`text-[13px] font-medium mt-1 inline-block ${!notif.isRead ? "text-[#0866ff]" : "text-gray-500"}`}
+                      className={`text-[12px] sm:text-[13px] font-medium mt-1 inline-block ${!notif.isRead ? "text-[#0866ff]" : "text-gray-500"}`}
                     >
                       {formatRelativeTime(notif.createdAt)}
                     </span>
@@ -187,7 +174,6 @@ export default function NotificationDropdown({
                 </Link>
               ))
             )}
-
             {isLoading && (
               <div className="py-4 flex justify-center">
                 <Loader2 className="w-6 h-6 text-gray-400 animate-spin" />

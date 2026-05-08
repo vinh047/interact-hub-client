@@ -28,7 +28,7 @@ export default function CommentMenu({
         <Button
           variant="ghost"
           size="icon"
-          className="opacity-0 group-hover:opacity-100 h-7 w-7 rounded-full text-gray-500 hover:bg-gray-100 focus:opacity-100 focus-visible:ring-0 focus-visible:ring-offset-0"
+          className="h-7 w-7 rounded-full text-gray-500 hover:bg-gray-100 focus:opacity-100 focus-visible:ring-0 focus-visible:ring-offset-0"
         >
           <MoreHorizontal className="w-4 h-4" />
         </Button>

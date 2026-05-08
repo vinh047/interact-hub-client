@@ -53,9 +53,9 @@ export function MediaPreview({ items, onRemove }: MediaPreviewProps) {
               <button
                 type="button"
                 onClick={() => onRemove(index)}
-                className="absolute top-2 right-2 p-1.5 bg-black/60 text-white rounded-full opacity-0 group-hover:opacity-100 transition-all cursor-pointer hover:bg-red-500"
+                className="absolute top-2 right-2 sm:w-8 sm:h-8 w-9 h-9 bg-black/60 text-white rounded-full flex items-center justify-center sm:opacity-0 opacity-100 group-hover:opacity-100 transition-all cursor-pointer hover:bg-red-500 shadow-lg"
               >
-                <X size={16} />
+                <X className="sm:w-4 sm:h-4 w-5 h-5" />
               </button>
             </div>
           );

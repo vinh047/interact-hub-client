@@ -10,7 +10,6 @@ export default function AvatarDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Xử lý click ra ngoài để tự động đóng dropdown
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -26,8 +25,8 @@ export default function AvatarDropdown() {
 
   const handleLogout = async () => {
     try {
-      await logout(); // Gọi hàm xóa session/cookie ở AuthContext
-      navigate("/login"); // Đẩy về trang đăng nhập
+      await logout();
+      navigate("/login");
     } catch (error) {
       console.error("Lỗi khi đăng xuất:", error);
     }
@@ -35,7 +34,6 @@ export default function AvatarDropdown() {
 
   return (
     <div className="relative" ref={dropdownRef}>
-      {/* Nút Avatar để mở Dropdown */}
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="w-10 h-10 cursor-pointer rounded-full border border-gray-200 overflow-hidden hover:ring-2 hover:ring-blue-500 transition-all p-0.5 shrink-0 focus:outline-none"
@@ -47,10 +45,8 @@ export default function AvatarDropdown() {
         />
       </button>
 
-      {/* Menu xổ xuống */}
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-85 bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.15)] border border-gray-200 z-50 overflow-hidden flex flex-col">
-          {/* Box trên cùng: Tóm tắt Profile (Bấm vào sẽ sang trang cá nhân) */}
+        <div className="absolute right-0 sm:right-0 mt-2 w-70 sm:w-85 bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.15)] border border-gray-200 z-50 overflow-hidden flex flex-col">
           <div className="p-3 shadow-sm border-b border-gray-100 z-10">
             <Link
               to={`/profile/${user?.id || "me"}`}
@@ -60,17 +56,16 @@ export default function AvatarDropdown() {
               <UserAvatar
                 src={user?.avatarUrl}
                 name={user?.fullName || "User"}
-                className="w-11 h-11 shrink-0 shadow-sm"
+                className="w-10 h-10 sm:w-11 sm:h-11 shrink-0 shadow-sm"
               />
               <div className="flex-1 min-w-0">
-                <p className="text-[16px] font-bold text-gray-900 truncate">
+                <p className="text-[15px] sm:text-[16px] font-bold text-gray-900 truncate">
                   {user?.fullName || "Người dùng InteractHub"}
                 </p>
               </div>
             </Link>
           </div>
 
-          {/* Box chứa các công cụ/Cài đặt */}
           <div className="p-2">
             <Link
               to="/settings"
@@ -78,12 +73,14 @@ export default function AvatarDropdown() {
               className="flex items-center justify-between p-2.5 rounded-lg hover:bg-gray-100 text-gray-900 font-medium transition-colors"
             >
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center shrink-0">
-                  <Settings className="w-5 h-5 text-gray-800" />
+                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gray-200 flex items-center justify-center shrink-0">
+                  <Settings className="w-4 h-4 sm:w-5 sm:h-5 text-gray-800" />
                 </div>
-                <span className="text-[15px]">Cài đặt & Quyền riêng tư</span>
+                <span className="text-[14px] sm:text-[15px]">
+                  Cài đặt & Quyền riêng tư
+                </span>
               </div>
-              <ChevronRight className="w-5 h-5 text-gray-400" />
+              <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
             </Link>
 
             <button
@@ -91,12 +88,12 @@ export default function AvatarDropdown() {
               className="w-full cursor-pointer flex items-center justify-between p-2.5 rounded-lg hover:bg-gray-100 text-gray-900 font-medium transition-colors text-left mt-1"
             >
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center shrink-0">
-                  <LogOut className="w-5 h-5 text-gray-800" />
+                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gray-200 flex items-center justify-center shrink-0">
+                  <LogOut className="w-4 h-4 sm:w-5 sm:h-5 text-gray-800" />
                 </div>
-                <span className="text-[15px]">Đăng xuất</span>
+                <span className="text-[14px] sm:text-[15px]">Đăng xuất</span>
               </div>
-              <ChevronRight className="w-5 h-5 text-gray-400" />
+              <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
             </button>
           </div>
         </div>

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // Thêm import này
 import {
   Dialog,
   DialogContent,
@@ -11,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Loader2 } from "lucide-react";
+import { Loader2, LogOut } from "lucide-react"; // Thêm icon LogOut
 import type { User } from "@/types/user.type";
 import { userService } from "@/services/user.service";
 import { toast } from "sonner";
@@ -33,7 +34,10 @@ export default function EditProfileDialog({
   const [fullName, setFullName] = useState(userData.fullName || "");
   const [bio, setBio] = useState(userData.bio || "");
   const [isSaving, setIsSaving] = useState(false);
-  const { updateUser } = useAuth();
+  
+  // Lấy thêm hàm logout từ AuthContext
+  const { updateUser, logout } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (open) {
@@ -70,26 +74,42 @@ export default function EditProfileDialog({
     }
   };
 
+  // Hàm xử lý Đăng xuất
+  const handleLogout = async () => {
+    if (window.confirm("Bạn có chắc chắn muốn đăng xuất khỏi InteractHub?")) {
+      try {
+        await logout();
+        navigate("/login");
+      } catch {
+        toast.error("Có lỗi xảy ra khi đăng xuất.");
+      }
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-130 p-0 overflow-hidden bg-white border-none shadow-2xl rounded-xl">
-        {/* HEADER: Sticky top để luôn hiển thị */}
-        <DialogHeader className="px-6 py-4 border-b border-gray-100 bg-white sticky top-0 z-10">
-          <DialogTitle className="text-xl font-bold text-gray-900">
+      <DialogContent 
+        // RESPONSIVE: Full màn hình trên Mobile, dạng Modal bo góc trên Desktop
+        className="w-full h-full sm:h-auto sm:max-w-130 p-0 overflow-hidden bg-white border-none shadow-2xl rounded-none sm:rounded-xl flex flex-col max-h-screen sm:max-h-[90vh]"
+      >
+        {/* HEADER: Cố định (shrink-0) */}
+        <DialogHeader className="px-5 py-4 sm:px-6 sm:py-5 border-b border-gray-100 bg-white shrink-0">
+          <DialogTitle className="text-lg sm:text-xl font-bold text-gray-900 text-center sm:text-left">
             Chỉnh sửa trang cá nhân
           </DialogTitle>
-          <DialogDescription className="text-[15px] text-gray-500 mt-1.5">
+          <DialogDescription className="text-[14px] sm:text-[15px] text-gray-500 mt-1.5 text-center sm:text-left">
             Cập nhật thông tin cá nhân để mọi người hiểu rõ hơn về bạn.
           </DialogDescription>
         </DialogHeader>
 
-        {/* BODY: Khung cuộn mượt mà nếu nội dung dài */}
-        <div className="px-6 py-6 space-y-6 overflow-y-auto max-h-[60vh] custom-scrollbar">
+        {/* BODY: Vùng cuộn (flex-1 overflow-y-auto) */}
+        <div className="flex-1 px-5 py-5 sm:px-6 sm:py-6 space-y-5 sm:space-y-6 overflow-y-auto custom-scrollbar">
+          
           {/* Field: Full Name */}
           <div className="space-y-2.5">
             <Label
               htmlFor="fullName"
-              className="text-[15px] font-semibold text-gray-900"
+              className="text-[14px] sm:text-[15px] font-semibold text-gray-900"
             >
               Tên hiển thị <span className="text-red-500">*</span>
             </Label>
@@ -97,7 +117,7 @@ export default function EditProfileDialog({
               id="fullName"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              className="h-11 bg-gray-50/50 border-gray-200 focus-visible:border-[#0866ff] focus-visible:ring-1 focus-visible:ring-[#0866ff] text-[15px] transition-all"
+              className="h-12 sm:h-11 bg-gray-50/50 border-gray-200 focus-visible:border-[#0866ff] focus-visible:ring-1 focus-visible:ring-[#0866ff] text-[15px] transition-all"
               placeholder="Nhập tên hiển thị của bạn..."
             />
           </div>
@@ -107,12 +127,12 @@ export default function EditProfileDialog({
             <div className="flex items-center justify-between">
               <Label
                 htmlFor="bio"
-                className="text-[15px] font-semibold text-gray-900"
+                className="text-[14px] sm:text-[15px] font-semibold text-gray-900"
               >
                 Tiểu sử
               </Label>
               <span
-                className={`text-[13px] font-medium ${bio.length >= 150 ? "text-red-500" : "text-gray-500"}`}
+                className={`text-[12px] sm:text-[13px] font-medium ${bio.length >= 150 ? "text-red-500" : "text-gray-500"}`}
               >
                 {bio.length}/150
               </span>
@@ -121,33 +141,46 @@ export default function EditProfileDialog({
               id="bio"
               value={bio}
               onChange={(e) => setBio(e.target.value)}
-              className="min-h-30 resize-none bg-gray-50/50 border-gray-200 focus-visible:border-[#0866ff] focus-visible:ring-1 focus-visible:ring-[#0866ff] text-[15px] leading-relaxed transition-all p-3"
+              className="min-h-30 sm:min-h-30 resize-none bg-gray-50/50 border-gray-200 focus-visible:border-[#0866ff] focus-visible:ring-1 focus-visible:ring-[#0866ff] text-[15px] leading-relaxed transition-all p-3"
               placeholder="Thêm tiểu sử để giới thiệu ngắn gọn về bản thân..."
               maxLength={150}
             />
           </div>
+
+          {/* MỚI: NÚT ĐĂNG XUẤT CHO MOBILE */}
+          <div className="pt-4 sm:hidden border-t border-gray-100 mt-8!">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleLogout}
+              className="w-full border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 font-bold h-12 rounded-xl"
+            >
+              <LogOut className="w-5 h-5 mr-2" />
+              Đăng xuất khỏi tài khoản
+            </Button>
+          </div>
         </div>
 
-        {/* FOOTER: Sticky bottom, nền xám nhẹ để tách biệt với body */}
-        <DialogFooter className="px-6 py-4 border-t border-gray-100 bg-gray-50/80 sticky bottom-0 flex items-center justify-end gap-3 sm:space-x-0">
+        {/* FOOTER: Cố định (shrink-0) */}
+        <DialogFooter 
+          // Mobile: Các nút xếp dọc (Lưu ở trên, Hủy ở dưới). Desktop: Xếp ngang
+          className="px-4 py-3 sm:px-6 sm:py-4 border-t border-gray-100 bg-gray-50/80 shrink-0 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-3 safe-area-pb"
+        >
           <Button
             type="button"
             variant="ghost"
             onClick={() => onOpenChange(false)}
             disabled={isSaving}
-            className="font-semibold text-gray-700 hover:bg-gray-200 hover:text-gray-900 h-10 px-5"
+            className="font-semibold text-gray-700 hover:bg-gray-200 hover:text-gray-900 h-11 sm:h-10 px-5 rounded-xl sm:rounded-lg"
           >
             Hủy
           </Button>
           <Button
             onClick={handleSave}
-            // Disable nút nếu đang lưu hoặc tên bị bỏ trống
             disabled={isSaving || !fullName.trim()}
-            className="bg-[#0866ff] hover:bg-[#075ce5] text-white font-semibold h-10 px-6 shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-[#0866ff] hover:bg-[#075ce5] text-white font-semibold h-11 sm:h-10 px-6 shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed rounded-xl sm:rounded-lg"
           >
-            {isSaving ? (
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-            ) : null}
+            {isSaving && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
             Lưu thay đổi
           </Button>
         </DialogFooter>

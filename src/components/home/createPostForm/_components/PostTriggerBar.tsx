@@ -16,25 +16,27 @@ export function PostTriggerBar({
   return (
     <div
       {...props}
-      className="bg-white rounded-xl shadow-sm border border-gray-200 p-3 flex items-center gap-3 cursor-pointer hover:bg-gray-50 transition-colors"
+      // sm:p-3 p-2.5: Giảm padding trên mobile. sm:gap-3 gap-2: Giảm khoảng cách.
+      className="bg-white rounded-xl shadow-sm border border-gray-200 sm:p-3 p-2.5 flex items-center sm:gap-3 gap-2 cursor-pointer hover:bg-gray-50 transition-colors"
     >
       <UserAvatar
         src={user?.avatarUrl}
         name={user?.fullName}
-        className="h-10 w-10"
+        className="sm:h-10 sm:w-10 h-9 w-9" // Thu nhỏ avatar một chút trên mobile
       />
-      <div className="flex-1 bg-gray-100 rounded-full py-2.5 px-4 text-gray-500 text-[15px]">
+      {/* text-sm sm:text-[15px]: Chữ nhỏ hơn trên mobile */}
+      <div className="flex-1 bg-gray-100 rounded-full py-2 sm:py-2.5 px-4 text-gray-500 text-sm sm:text-[15px] truncate">
         {user?.fullName} ơi, bạn đang nghĩ gì thế?
       </div>
-      <div className="flex gap-2 pr-2">
+      <div className="flex gap-2 pr-1">
         <div
           className="p-2 hover:bg-gray-200 rounded-full transition-colors"
           onClick={(e) => {
-            e.stopPropagation(); // Ngăn mở Dialog ngay lập tức
+            e.stopPropagation();
             onMediaClick();
           }}
         >
-          <ImageIcon className="text-green-500 w-6 h-6" />
+          <ImageIcon className="text-green-500 w-5 h-5 sm:w-6 sm:h-6" />
         </div>
       </div>
     </div>

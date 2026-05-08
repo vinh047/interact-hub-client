@@ -7,6 +7,8 @@ import {
   Loader2,
   UserCheck,
   UserMinus,
+  LogOut,
+  Settings,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
@@ -18,12 +20,19 @@ import type { ApiErrorResponse } from "@/types/common.type";
 import { Link } from "react-router-dom";
 import { friendshipService } from "@/services/friendship.service";
 import EditProfileDialog from "./EditProfileDialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface ProfileHeaderProps {
   isCurrentUser: boolean;
   userData: User;
   onAvatarChange: (newAvatarUrl: string) => void;
   onProfileUpdate: (updatedData: Partial<User>) => void;
+  onLogout: () => void;
 }
 
 export default function ProfileHeader({
@@ -31,6 +40,7 @@ export default function ProfileHeader({
   userData,
   onAvatarChange,
   onProfileUpdate,
+  onLogout,
 }: ProfileHeaderProps) {
   const { updateUser } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -42,6 +52,8 @@ export default function ProfileHeader({
   const [isProcessing, setIsProcessing] = useState(false);
 
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
   useEffect(() => {
     setStatus(userData.friendshipStatus || null);
@@ -171,21 +183,46 @@ export default function ProfileHeader({
       </div>
 
       {/* CỤM NÚT TƯƠNG TÁC (ACTION BUTTONS) */}
-      <div className="flex gap-2 shrink-0">
+      <div className="flex flex-wrap justify-center sm:justify-start gap-2 shrink-0">
         {isCurrentUser ? (
           <>
             {/* Giao diện cho chủ trang cá nhân */}
             <Link to="/story/create">
-              <Button className="bg-[#0866ff] hover:bg-blue-700 font-semibold h-9">
-                <Plus className="w-4 h-4 mr-1.5 stroke-3" /> Thêm vào tin
+              <Button className="bg-[#0866ff] hover:bg-blue-700 font-semibold h-9 px-3 sm:px-4">
+                <Plus className="w-4 h-4 sm:mr-1.5 stroke-3" />
+                <span className="hidden sm:inline">Thêm vào tin</span>
+                <span className="sm:hidden">Tin</span>
               </Button>
             </Link>
+
             <Button
               onClick={() => setIsEditDialogOpen(true)}
               variant="secondary"
-              className="bg-gray-200 hover:bg-gray-300 text-gray-900 font-semibold h-9"
+              className="bg-gray-200 hover:bg-gray-300 text-gray-900 font-semibold h-9 px-3 sm:px-4"
             >
-              <Edit2 className="w-4 h-4 mr-1.5" /> Chỉnh sửa trang cá nhân
+              <Edit2 className="w-4 h-4 sm:mr-1.5" />
+              <span className="hidden sm:inline">Chỉnh sửa trang cá nhân</span>
+              <span className="sm:hidden">Chỉnh sửa</span>
+            </Button>
+
+            {/* MỚI: Nút Cài đặt và Đăng xuất (Chỉ hiển thị trên Mobile - md:hidden) */}
+            <Link to="/settings" className="md:hidden">
+              <Button
+                variant="secondary"
+                size="icon"
+                className="bg-gray-200 hover:bg-gray-300 text-gray-900 h-9 w-9"
+              >
+                <Settings className="w-4 h-4" />
+              </Button>
+            </Link>
+
+            <Button
+              onClick={() => setIsLogoutModalOpen(true)}
+              variant="secondary"
+              size="icon"
+              className="md:hidden bg-red-100 hover:bg-red-200 text-red-600 h-9 w-9"
+            >
+              <LogOut className="w-4 h-4" />
             </Button>
           </>
         ) : (
@@ -258,6 +295,38 @@ export default function ProfileHeader({
           onSuccess={onProfileUpdate}
         />
       )}
+      <Dialog open={isLogoutModalOpen} onOpenChange={setIsLogoutModalOpen}>
+        <DialogContent className="w-[90%] max-w-100 rounded-2xl bg-white p-0 overflow-hidden border-none shadow-2xl">
+          <DialogHeader className="p-4 sm:p-5 border-b border-gray-100">
+            <DialogTitle className="text-center text-lg font-bold text-gray-900">
+              Đăng xuất
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="p-6 text-center">
+            <p className="text-[15px] text-gray-600">
+              Bạn có chắc chắn muốn đăng xuất khỏi InteractHub không?
+            </p>
+          </div>
+
+          <div className="flex border-t border-gray-100 bg-gray-50/50">
+            <Button
+              variant="ghost"
+              onClick={() => setIsLogoutModalOpen(false)}
+              className="flex-1 h-12 rounded-none border-r border-gray-100 font-semibold text-gray-600 hover:bg-gray-100"
+            >
+              Hủy
+            </Button>
+            <Button
+              variant="ghost"
+              onClick={onLogout}
+              className="flex-1 h-12 rounded-none font-bold text-red-600 hover:text-red-700 hover:bg-red-50"
+            >
+              Đăng xuất
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

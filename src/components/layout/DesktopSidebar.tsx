@@ -20,7 +20,7 @@ export default function DesktopSidebar() {
   ];
 
   return (
-    <div className="absolute top-12 left-0 h-[300px] flex flex-col w-[280px] bg-transparent transition-all duration-300 ease-in-out z-50 rounded-r-2xl border-r border-transparent">
+    <div className="absolute top-12 left-0 h-75 flex flex-col w-70 bg-transparent transition-all duration-300 ease-in-out z-50 rounded-r-2xl border-r border-transparent">
       
       <nav className="space-y-2 px-3 w-full overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         {menuItems.map((item) => {
@@ -44,11 +44,11 @@ export default function DesktopSidebar() {
                   : "text-gray-700 hover:bg-gray-100 hover:text-gray-900 font-semibold"
               )}
             >
-              <div className="w-[30px] flex justify-center shrink-0">
+              <div className="w-7.5 flex justify-center shrink-0">
                 <item.icon
                   strokeWidth={isActive ? 2.5 : 2}
                   className={cn(
-                    "w-[26px] h-[26px] transition-transform duration-200",
+                    "w-6.5 h-6.5 transition-transform duration-200",
                     isActive ? "fill-blue-100" : "" 
                   )}
                 />

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ProfileHeader from "@/components/profile/ProfileHeader";
@@ -17,11 +17,13 @@ export default function ProfilePage() {
   const currentTab = searchParams.get("tab") || "all";
 
   const { id } = useParams<{ id: string }>();
-  const { user: currentUser } = useAuth();
+  const { user: currentUser, logout } = useAuth();
   const isCurrentUser = !id || id === currentUser?.id;
   const [isLoading, setIsLoading] = useState(true);
 
   const [profileUser, setProfileUser] = useState<User | null>(null);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -54,13 +56,22 @@ export default function ProfilePage() {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate("/login");
+    } catch (error) {
+      console.error("Lỗi khi đăng xuất:", error);
+    }
+  };
+
   if (isLoading)
     return <div className="text-center py-20">Đang tải trang cá nhân...</div>;
 
   return (
     <>
       <div className="bg-white shadow-sm pt-8 min-h-screen">
-        <div className="max-w-5xl mx-auto px-4">
+        <div className="max-w-5xl mx-auto px-2 lg:px-4">
           <ProfileHeader
             isCurrentUser={isCurrentUser}
             userData={profileUser || currentUser!}
@@ -74,6 +85,7 @@ export default function ProfilePage() {
                 prev ? { ...prev, ...updatedData } : null,
               );
             }}
+            onLogout={handleLogout}
           />
 
           {/* Menu Tabs */}

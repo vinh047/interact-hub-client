@@ -105,7 +105,7 @@ export default function PostCard({ post: initialPost }: { post: Post }) {
   return (
     <div
       className={cn(
-        "bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden mb-4",
+        "bg-white rounded-none sm:rounded-xl border-y sm:border border-gray-200 shadow-sm overflow-hidden mb-2 sm:mb-4",
         isDeleting && "opacity-50 pointer-events-none",
       )}
     >

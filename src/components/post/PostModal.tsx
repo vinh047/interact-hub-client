@@ -134,7 +134,7 @@ export default function PostModal() {
       }}
     >
       <DialogContent
-        className="p-0 bg-[#F0F2F5] sm:rounded-xl overflow-hidden shadow-2xl gap-0 w-full sm:max-w-180 md:max-w-180 h-full sm:h-[90vh] sm:max-h-225 flex flex-col [&>button]:hidden"
+        className="p-0 bg-[#F0F2F5] sm:rounded-xl overflow-hidden shadow-2xl gap-0 w-full sm:max-w-180 md:max-w-180 h-full max-h-[85vh] sm:h-[90vh] sm:max-h-225 flex flex-col [&>button]:hidden"
         aria-describedby={undefined}
       >
         <DialogHeader className="bg-white border-b border-gray-200 px-4 py-3.5 flex items-center justify-center shrink-0 z-10 shadow-sm relative m-0">

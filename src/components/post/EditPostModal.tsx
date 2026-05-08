@@ -160,7 +160,7 @@ export default function EditPostModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-125 p-0 gap-0 bg-white border-none shadow-2xl overflow-hidden flex flex-col max-h-[95vh]">
+      <DialogContent className="sm:max-w-125 p-0 gap-0 bg-white border-none shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
         <DialogHeader className="p-4 border-b border-gray-100 shrink-0">
           <DialogTitle className="text-center text-lg font-bold">
             Chỉnh sửa bài viết

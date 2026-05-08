@@ -116,7 +116,7 @@ export default function StoryFeed() {
       <div
         ref={scrollContainerRef}
         onScroll={handleScroll}
-        className="flex gap-2 py-2 overflow-x-auto snap-x snap-mandatory scrollbar-hide scroll-smooth"
+        className="flex gap-2 py-2 px-1 overflow-x-auto snap-x snap-mandatory scrollbar-hide scroll-smooth"
       >
         {/* THẺ TẠO TIN (CỦA TÔI) */}
         <Link

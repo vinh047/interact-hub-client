@@ -69,19 +69,29 @@ export default function StoryViewer({
   };
 
   return (
-    <div className="flex-1 relative flex items-center justify-center bg-black group p-4 lg:p-8">
+    // 1. SỬA ĐỔI WRAPPER: p-0 trên mobile để tràn viền, sm:p-4 lg:p-8 trên desktop
+    <div className="flex-1 relative flex items-center justify-center bg-black group p-0 sm:p-4 lg:p-8 overflow-hidden">
+      
+      {/* Nút Close hiển thị ngoài viền trên Tablet/Desktop */}
       <Button
         variant="ghost"
         size="icon"
         onClick={onClose}
-        className="absolute top-4 right-4 z-50 rounded-full bg-gray-800/50 hover:bg-gray-700/50 text-white hover:text-white border-0 lg:hidden"
+        className="absolute top-4 right-4 z-50 rounded-full bg-gray-800/50 hover:bg-gray-700/50 text-white hover:text-white border-0 hidden sm:flex lg:hidden"
       >
         <X className="w-5! h-5!" />
       </Button>
 
-      <div className="relative h-full max-h-full w-auto aspect-9/16 bg-black shadow-2xl rounded-xl overflow-hidden flex items-center justify-center z-20 border border-gray-700">
-        {/* Lớp phủ Header */}
-        <div className="absolute inset-x-0 top-0 z-30 p-4 flex flex-col gap-3 bg-linear-to-b from-black/70 to-transparent">
+      {/* 2. SỬA ĐỔI KHUNG VIDEO: 
+          - Mobile: w-full h-full, không bo góc (rounded-none), không viền (border-none)
+          - Desktop (sm): Dùng sm:w-auto sm:aspect-[9/16], có bo góc, có viền 
+      */}
+      <div className="relative w-full h-full sm:w-auto sm:aspect-9/16 bg-black shadow-none sm:shadow-2xl rounded-none sm:rounded-xl overflow-hidden flex items-center justify-center z-20 sm:border border-gray-700">
+        
+        {/* Lớp phủ Header (Timeline + User Info) */}
+        {/* Thêm pt-safe để tránh thanh trạng thái tai thỏ/đục lỗ của điện thoại */}
+        <div className="absolute inset-x-0 top-0 z-30 p-3 pt-4 sm:p-4 flex flex-col gap-3 bg-linear-to-b from-black/80 via-black/40 to-transparent">
+          {/* Thanh Timeline */}
           <div className="flex gap-1.5 px-0">
             {currentAuthor.stories.map((story: Story, idx: number) => (
               <div
@@ -104,37 +114,39 @@ export default function StoryViewer({
           </div>
 
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
               <Link to={`/profile/${currentAuthor.authorId}`}>
                 <UserAvatar
                   src={currentAuthor.authorAvatarUrl}
                   name={currentAuthor.authorName}
                   border
-                  className="w-10 h-10 shadow-sm"
+                  className="w-9 h-9 sm:w-10 sm:h-10 shadow-sm"
                 />
               </Link>
               <div className="flex flex-col">
                 <Link to={`/profile/${currentAuthor.authorId}`}>
-                  <span className="font-bold text-[15px] drop-shadow-lg text-white whitespace-nowrap">
+                  <span className="font-bold text-[14px] sm:text-[15px] drop-shadow-lg text-white whitespace-nowrap">
                     {currentAuthor.authorName}
                   </span>
                 </Link>
-                <span className="text-[12px] opacity-80 drop-shadow-lg text-white/90">
+                <span className="text-[11px] sm:text-[12px] opacity-80 drop-shadow-lg text-white/90">
                   {formatRelativeTime(currentStory.createdAt)}
                 </span>
               </div>
             </div>
-            <div className="flex items-center gap-1.5">
+
+            {/* CỤM NÚT ĐIỀU KHIỂN BÊN PHẢI */}
+            <div className="flex items-center gap-0 sm:gap-1.5">
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={togglePlayPause}
-                className="rounded-full text-white hover:bg-white/20 hover:text-white drop-shadow-lg"
+                className="rounded-full w-9 h-9 sm:w-10 sm:h-10 text-white hover:bg-white/20 hover:text-white drop-shadow-lg"
               >
                 {isPaused ? (
-                  <Play className="w-5! h-5! fill-current" />
+                  <Play className="w-4! h-4! sm:w-5! sm:h-5! fill-current" />
                 ) : (
-                  <Pause className="w-5! h-5! fill-current" />
+                  <Pause className="w-4! h-4! sm:w-5! sm:h-5! fill-current" />
                 )}
               </Button>
 
@@ -142,13 +154,23 @@ export default function StoryViewer({
                 variant="ghost"
                 size="icon"
                 onClick={() => setIsMuted(!isMuted)}
-                className="rounded-full text-white hover:bg-white/20 hover:text-white drop-shadow-lg"
+                className="rounded-full w-9 h-9 sm:w-10 sm:h-10 text-white hover:bg-white/20 hover:text-white drop-shadow-lg"
               >
                 {isMuted ? (
-                  <VolumeX className="w-5! h-5!" />
+                  <VolumeX className="w-4! h-4! sm:w-5! sm:h-5!" />
                 ) : (
-                  <Volume2 className="w-5! h-5!" />
+                  <Volume2 className="w-4! h-4! sm:w-5! sm:h-5!" />
                 )}
+              </Button>
+
+              {/* 3. NÚT CLOSE CHO MOBILE: Đưa vào cạnh nút Volume để dễ bấm và không đè timeline */}
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onClose}
+                className="rounded-full w-9 h-9 text-white hover:bg-white/20 hover:text-white drop-shadow-lg sm:hidden ml-1"
+              >
+                <X className="w-5! h-5!" />
               </Button>
             </div>
           </div>
@@ -168,7 +190,7 @@ export default function StoryViewer({
           onPause={() => setIsPaused(true)}
         />
 
-        {/* Điều hướng Mobile */}
+        {/* Điều hướng Mobile (Chạm trái/phải màn hình) */}
         {!isFirstStory && (
           <div
             className="absolute inset-y-0 left-0 w-1/4 z-20 cursor-pointer md:hidden"
@@ -181,7 +203,7 @@ export default function StoryViewer({
         />
       </div>
 
-      {/* Điều hướng Desktop */}
+      {/* Điều hướng Desktop (Nút bấm tròn) */}
       {!isFirstStory && (
         <Button
           onClick={onPrev}

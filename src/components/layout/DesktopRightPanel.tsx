@@ -179,7 +179,7 @@ export default function DesktopRightPanel() {
                       className="w-10 h-10 shrink-0 rounded-full object-cover border border-gray-100"
                     />
                   ) : (
-                    <div className="w-10 h-10 shrink-0 rounded-full bg-gradient-to-tr from-blue-500 to-cyan-400 flex items-center justify-center text-white font-bold text-sm shadow-sm">
+                    <div className="w-10 h-10 shrink-0 rounded-full bg-linear-to-tr from-blue-500 to-cyan-400 flex items-center justify-center text-white font-bold text-sm shadow-sm">
                       {getInitials(user.fullName)}
                     </div>
                   )}
@@ -206,7 +206,7 @@ export default function DesktopRightPanel() {
                       handleCancelRequest(user.id);
                     }}
                     // Dùng group/btn để đổi text và màu nền khi hover
-                    className="group/btn shrink-0 rounded-full h-8 px-4 text-xs font-bold bg-gray-100 hover:bg-red-50 text-gray-700 hover:text-red-600 transition-all border border-transparent hover:border-red-200 w-[72px]"
+                    className="group/btn shrink-0 rounded-full h-8 px-4 text-xs font-bold bg-gray-100 hover:bg-red-50 text-gray-700 hover:text-red-600 transition-all border border-transparent hover:border-red-200 w-18"
                   >
                     {processingId === user.id ? (
                       <Loader2 className="w-3 h-3 animate-spin text-gray-500" />
@@ -230,7 +230,7 @@ export default function DesktopRightPanel() {
                       e.preventDefault();
                       handleAddFriend(user.id);
                     }}
-                    className="shrink-0 rounded-full h-8 px-4 text-xs font-bold border-gray-300 hover:bg-gray-100 transition-colors w-[72px]"
+                    className="shrink-0 rounded-full h-8 px-4 text-xs font-bold border-gray-300 hover:bg-gray-100 transition-colors w-18"
                   >
                     {processingId === user.id ? (
                       <Loader2 className="w-3 h-3 animate-spin text-gray-500" />
