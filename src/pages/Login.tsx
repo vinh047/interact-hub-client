@@ -136,12 +136,12 @@ export default function Login() {
         </div>
 
         <div className="flex items-center justify-end">
-          <Link
+          {/* <Link
             to="#"
             className="text-sm font-semibold text-blue-600 hover:text-blue-700"
           >
             Quên mật khẩu?
-          </Link>
+          </Link> */}
         </div>
 
         <Button

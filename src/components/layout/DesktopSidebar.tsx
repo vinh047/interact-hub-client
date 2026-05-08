@@ -1,64 +1,67 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, Compass, Bell, User, Settings, LogOut } from "lucide-react";
+import { Home, Users, Archive, Compass } from "lucide-react";
 import { cn } from "@/lib/utils";
+// Import hook lấy thông tin user đăng nhập
 import { useAuth } from "@/contexts/AuthContext";
 
 export default function DesktopSidebar() {
   const location = useLocation();
-  const { user, logout } = useAuth();
+  const { user } = useAuth(); // Lấy user hiện tại
 
-  // Danh sách các menu item để render cho gọn
+  // Lấy ID của user, nếu chưa load kịp thì để tạm "me"
+  const userId = user?.id || "me";
+
   const menuItems = [
     { name: "Trang chủ", icon: Home, path: "/" },
     { name: "Khám phá", icon: Compass, path: "/explore" },
-    { name: "Thông báo", icon: Bell, path: "/notifications" },
-    { name: "Hồ sơ", icon: User, path: `/profile/${user?.id || "me"}` },
+    // Dùng template string (``) để chèn userId động vào link
+    { name: "Bạn bè", icon: Users, path: `/profile/${userId}?tab=friends` },
+    { name: "Kho lưu trữ tin", icon: Archive, path: `/profile/${userId}?tab=archive` },
   ];
 
   return (
-    <div className="flex flex-col h-full py-6 px-4">
-      {/* 2. Menu chính */}
-      <nav className="flex-1 space-y-2">
+    <div className="absolute top-12 left-0 h-[300px] flex flex-col w-[280px] bg-transparent transition-all duration-300 ease-in-out z-50 rounded-r-2xl border-r border-transparent">
+      
+      <nav className="space-y-2 px-3 w-full overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         {menuItems.map((item) => {
-          const isActive = location.pathname === item.path;
+          // Lấy toàn bộ đường dẫn bao gồm cả phần ?tab=...
+          const currentUrl = location.pathname + location.search;
+          
+          // Kiểm tra xem item hiện tại có đang được active không
+          const isActive = item.path.includes("?") 
+            ? currentUrl === item.path // Nếu link có ?tab= thì phải khớp hoàn toàn
+            : location.pathname === item.path; // Nếu không có thì chỉ cần khớp pathname
+
           return (
             <Link
               key={item.name}
               to={item.path}
+              title={item.name}
               className={cn(
-                "flex items-center gap-4 px-4 py-3 rounded-2xl transition-all duration-200 group",
+                "flex items-center px-3 py-3 rounded-xl transition-colors duration-200",
                 isActive
                   ? "bg-blue-50 text-blue-600 font-bold"
-                  : "text-gray-600 hover:bg-gray-100 hover:text-gray-900 font-medium",
+                  : "text-gray-700 hover:bg-gray-100 hover:text-gray-900 font-semibold"
               )}
             >
-              <item.icon
-                className={cn(
-                  "w-6 h-6 transition-transform duration-200 group-hover:scale-110",
-                  isActive ? "fill-blue-100" : "", // Thêm hiệu ứng fill nếu icon hỗ trợ
-                )}
-              />
-              <span className="text-lg hidden lg:block">{item.name}</span>
+              <div className="w-[30px] flex justify-center shrink-0">
+                <item.icon
+                  strokeWidth={isActive ? 2.5 : 2}
+                  className={cn(
+                    "w-[26px] h-[26px] transition-transform duration-200",
+                    isActive ? "fill-blue-100" : "" 
+                  )}
+                />
+              </div>
+
+              <span className="text-[16px] xl:text-[17px] tracking-tight whitespace-nowrap ml-4">
+                {item.name}
+              </span>
             </Link>
           );
         })}
       </nav>
-
-      {/* 3. Khu vực Avatar & Settings (Dưới cùng) */}
-      <div className="mt-auto space-y-2">
-        <button className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-gray-600 hover:bg-gray-100 transition-all font-medium group">
-          <Settings className="w-6 h-6 transition-transform duration-200 group-hover:rotate-90" />
-          <span className="text-lg hidden lg:block">Cài đặt</span>
-        </button>
-
-        <button
-          onClick={logout}
-          className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-red-500 hover:bg-red-50 transition-all font-medium group"
-        >
-          <LogOut className="w-6 h-6 transition-transform duration-200 group-hover:-translate-x-1" />
-          <span className="text-lg hidden lg:block">Đăng xuất</span>
-        </button>
-      </div>
+      
     </div>
   );
 }

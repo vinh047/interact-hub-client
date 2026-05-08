@@ -18,6 +18,7 @@ import {
   DialogTitle,
   DialogHeader,
 } from "@/components/ui/dialog";
+import { getFriendlyErrorMessage } from "@/utils/errorHandler";
 
 export default function PostModal() {
   const { postId } = useParams();
@@ -51,8 +52,14 @@ export default function PostModal() {
 
         const cmtRes = await commentService.getRootComments(postId, 1, 20);
         setComments(cmtRes.data);
-      } catch {
-        toast.error("Không thể tải bài viết hoặc bình luận");
+      } catch (error) {
+        const errorMessage = getFriendlyErrorMessage(error);
+
+        console.log("Lỗi khi tải bài viết hoặc bình luận: ", errorMessage);
+
+        toast.error("Không thể tải bài viết", {
+          description: errorMessage,
+        });
         setIsLoadingPost(false);
       } finally {
         setIsLoading(false);

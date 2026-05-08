@@ -4,7 +4,7 @@ import PostFeed from "@/components/home/feed/PostFeed"; // Import component vừ
 
 export default function Home() {
   return (
-    <div className="max-w-150 pt-4 min-w-170 mx-auto pb-10">
+    <div className="max-w-200 pt-4 min-w-170 mx-auto pb-10">
       {/* KHỐI 1: STORY FEED */}
       <StoryFeed />
 

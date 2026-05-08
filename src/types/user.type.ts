@@ -9,6 +9,7 @@ export interface User {
   friendCount: number;
   friendshipStatus?: FriendshipStatus;
   isRequester?: boolean;
+  mutualFriendsCount: number; 
 }
 
 // Dành cho trang danh sách bạn bè

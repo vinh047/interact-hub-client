@@ -28,7 +28,8 @@ export function useSignalR() {
     // 2. Chỉ khởi tạo ống kết nối nếu nó chưa từng tồn tại
     if (!sharedConnection) {
       sharedConnection = new HubConnectionBuilder()
-        .withUrl("https://interacthub-api-vinh047-ekbza7hjg3b8eyd2.southeastasia-01.azurewebsites.net/hubs/notification", {
+        .withUrl("http://localhost:5201/hubs/notification", {
+        // .withUrl("https://interacthub-api-vinh047-ekbza7hjg3b8eyd2.southeastasia-01.azurewebsites.net/hubs/notification", {
           withCredentials: true,
         })
         .withAutomaticReconnect()

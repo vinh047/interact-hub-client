@@ -106,7 +106,10 @@ export default function ProfilePage() {
               </TabsTrigger>
 
               {isCurrentUser && (
-                <TabsTrigger value="archive" className="...">
+                <TabsTrigger
+                  value="archive"
+                  className="h-full rounded-none px-4 text-[15px] font-semibold text-gray-600 bg-transparent border-transparent border-b-[3px] hover:bg-gray-100 data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:text-[#0866ff] data-[state=active]:border-b-[#0866ff] focus-visible:ring-0"
+                >
                   Kho lưu trữ tin
                 </TabsTrigger>
               )}
