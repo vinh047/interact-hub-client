@@ -8,7 +8,6 @@ import {
   UserCheck,
   UserMinus,
   LogOut,
-  Settings,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
@@ -206,7 +205,7 @@ export default function ProfileHeader({
             </Button>
 
             {/* MỚI: Nút Cài đặt và Đăng xuất (Chỉ hiển thị trên Mobile - md:hidden) */}
-            <Link to="/settings" className="md:hidden">
+            {/* <Link to="/settings" className="md:hidden">
               <Button
                 variant="secondary"
                 size="icon"
@@ -214,7 +213,7 @@ export default function ProfileHeader({
               >
                 <Settings className="w-4 h-4" />
               </Button>
-            </Link>
+            </Link> */}
 
             <Button
               onClick={() => setIsLogoutModalOpen(true)}

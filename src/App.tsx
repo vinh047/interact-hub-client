@@ -26,6 +26,7 @@ import { toast } from "sonner";
 import ProfilePage from "./pages/ProfilePage";
 import HeaderOnlyLayout from "./layouts/HeaderOnlyLayout";
 import SearchPage from "./pages/SearchPage";
+import Explore from "./pages/Explore";
 
 function AppRoutes() {
   const location = useLocation();
@@ -57,6 +58,7 @@ function AppRoutes() {
           <Route element={<HeaderOnlyLayout />}>
             <Route path="/profile/:id" element={<ProfilePage />} />
             <Route path="/search" element={<SearchPage />} />
+            <Route path="/explore" element={<Explore />} />
           </Route>
 
           <Route path="/story/create" element={<CreateStoryPage />} />

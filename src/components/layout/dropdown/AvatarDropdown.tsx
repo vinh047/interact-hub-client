@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { LogOut, Settings, ChevronRight } from "lucide-react";
+import { LogOut, ChevronRight } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import UserAvatar from "@/components/common/UserAvatar";
 
@@ -67,7 +67,7 @@ export default function AvatarDropdown() {
           </div>
 
           <div className="p-2">
-            <Link
+            {/* <Link
               to="/settings"
               onClick={() => setIsOpen(false)}
               className="flex items-center justify-between p-2.5 rounded-lg hover:bg-gray-100 text-gray-900 font-medium transition-colors"
@@ -81,7 +81,7 @@ export default function AvatarDropdown() {
                 </span>
               </div>
               <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
-            </Link>
+            </Link> */}
 
             <button
               onClick={handleLogout}

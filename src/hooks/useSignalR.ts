@@ -8,74 +8,97 @@ import {
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 
-// 1. KHAI BÁO BÊN NGOÀI HOOK ĐỂ GIỮ KẾT NỐI DUY NHẤT CHO TOÀN ỨNG DỤNG
+// 1. THÊM BIẾN LƯU ID CHỦ SỞ HỮU KẾT NỐI
 let sharedConnection: HubConnection | null = null;
+let connectedUserId: string | null = null;
 
 export function useSignalR() {
   const { user } = useAuth();
   const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
-    // Nếu user đăng xuất -> Đóng kết nối
+    // Nếu user đăng xuất -> Đóng kết nối cũ
     if (!user) {
       if (sharedConnection) {
-        sharedConnection.stop();
+        sharedConnection.stop().catch(console.error);
         sharedConnection = null;
+        connectedUserId = null;
       }
       return;
     }
 
-    // 2. Chỉ khởi tạo ống kết nối nếu nó chưa từng tồn tại
+    // 2. LOGIC DIỆT KẾT NỐI MA:
+    // Nếu có kết nối tồn tại, nhưng ID chủ sở hữu không khớp với người đang đăng nhập
+    // -> Ép buộc đóng kết nối cũ để trình duyệt gửi Cookie của tài khoản mới.
+    if (sharedConnection && connectedUserId !== user.id) {
+      console.log("Phát hiện Ghost Connection, đang dọn dẹp...");
+      sharedConnection.stop().catch(console.error);
+      sharedConnection = null;
+    }
+
+    // 3. Khởi tạo ống kết nối mới tinh
     if (!sharedConnection) {
       sharedConnection = new HubConnectionBuilder()
         .withUrl("http://localhost:5201/hubs/notification", {
-        // .withUrl("https://interacthub-api-vinh047-ekbza7hjg3b8eyd2.southeastasia-01.azurewebsites.net/hubs/notification", {
+          // .withUrl("https://interacthub-api-vinh047-ekbza7hjg3b8eyd2.southeastasia-01.azurewebsites.net/hubs/notification", {
+
           withCredentials: true,
         })
         .withAutomaticReconnect()
         .configureLogging(LogLevel.Information)
         .build();
+
+      connectedUserId = user.id; // Đánh dấu chủ quyền kết nối cho user hiện tại
     }
 
-    // 3. RẤT QUAN TRỌNG: Hủy đăng ký sự kiện cũ trước khi đăng ký mới
+    // Hủy đăng ký sự kiện cũ trước khi đăng ký mới (chống duplicate khi React re-render)
     sharedConnection.off("ReceiveNotification");
 
-    // 4. Lắng nghe sự kiện mới
+    // Lắng nghe sự kiện mới
     sharedConnection.on("ReceiveNotification", (notification) => {
       console.log("Nhận được thông báo mới:", notification);
       setUnreadCount((prev) => prev + 1);
 
-      // Phân loại vị trí dựa vào Type của thông báo
-      // Giả sử NotificationType ở Backend của bạn trả về chuỗi: "FriendRequest", "FriendAccept", "Like", "Comment"
       const isFriendRelated =
         notification.type === "FriendRequest" ||
         notification.type === "FriendAccept" ||
         notification.type === 2 ||
-        notification.type === 3; // (Check theo giá trị Enum của bạn)
+        notification.type === 3;
 
       if (isFriendRelated) {
         toast.success("Lời mời kết bạn", {
           description: notification.content,
-          position: "bottom-left", // Hiện ở dưới cùng bên trái
+          position: "bottom-left",
           duration: 5000,
         });
       } else {
         toast("Tương tác mới", {
           description: notification.content,
-          position: "top-right", // Hiện ở trên cùng bên phải
+          position: "top-right",
           duration: 3000,
         });
       }
     });
 
-    // 5. Chỉ bật kết nối nếu nó đang ở trạng thái ngắt
+    // Bật kết nối
     if (sharedConnection.state === HubConnectionState.Disconnected) {
       sharedConnection
         .start()
-        .then(() => console.log("SignalR: Kết nối thành công!"))
+        .then(() =>
+          console.log(`SignalR: Kết nối thành công cho User [${user.id}]`),
+        )
         .catch((error) => console.error("SignalR: Lỗi khi kết nối:", error));
     }
-  }, [user]); // Chạy lại khi trạng thái user thay đổi (đăng nhập/đăng xuất)
+
+    // 4. CLEANUP FUNCTION KHI COMPONENT UNMOUNT
+    return () => {
+      // Khi component chứa Hook này (ví dụ: Header) bị hủy, ta chỉ cần gỡ sự kiện lắng nghe.
+      // Không gọi .stop() ở đây để tránh bị đứt kết nối khi người dùng chuyển trang.
+      if (sharedConnection) {
+        sharedConnection.off("ReceiveNotification");
+      }
+    };
+  }, [user]);
 
   return {
     unreadCount,
