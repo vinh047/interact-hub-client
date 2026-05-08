@@ -23,6 +23,7 @@ import { MediaPreview } from "../home/createPostForm/_components/MediaPreview";
 import type { Post, UpdatePostRequest } from "@/types/post.type";
 import type z from "zod";
 import type { PostVisibility } from "@/types/enum.type";
+import { getFriendlyErrorMessage } from "@/utils/errorHandler";
 
 interface EditPostModalProps {
   post: Post;
@@ -151,8 +152,9 @@ export default function EditPostModal({
       toast.success("Cập nhật bài viết thành công!");
       onOpenChange(false);
       if (onSuccess) onSuccess();
-    } catch {
-      toast.error("Có lỗi xảy ra khi cập nhật bài viết.");
+    } catch (error) {
+      const errorMessage = getFriendlyErrorMessage(error);
+      toast.error(errorMessage);
     } finally {
       setIsPending(false);
     }

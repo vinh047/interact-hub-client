@@ -25,7 +25,7 @@ import { postService } from "@/services/post.service";
 import { VisibilitySelect } from "./_components/VisibilitySelect";
 import { MediaPreview } from "./_components/MediaPreview";
 import { PostTriggerBar } from "./_components/PostTriggerBar";
-import type { ApiErrorResponse } from "@/types/common.type";
+import { getFriendlyErrorMessage } from "@/utils/errorHandler";
 
 export default function CreatePost() {
   const { user } = useAuth();
@@ -89,9 +89,9 @@ export default function CreatePost() {
       toast.success("Đăng bài viết thành công!");
 
       handleOpenChange(false);
-    } catch (error: unknown) {
-      const apiError = error as ApiErrorResponse;
-      toast.error(apiError.message || "Có lỗi xảy ra khi đăng bài.");
+    } catch (error) {
+      const apiError = getFriendlyErrorMessage(error);
+      toast.error(apiError);
     } finally {
       setIsPending(false);
     }

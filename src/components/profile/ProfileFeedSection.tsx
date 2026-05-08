@@ -14,6 +14,8 @@ import {
 import { postService } from "@/services/post.service";
 import type { Post, PostQueryParameters } from "@/types/post.type";
 import type { PostVisibility } from "@/types/enum.type";
+import { toast } from "sonner";
+import { getFriendlyErrorMessage } from "@/utils/errorHandler";
 
 interface ProfileFeedSectionProps {
   isCurrentUser: boolean;
@@ -37,6 +39,8 @@ export default function ProfileFeedSection({
   const [isFetching, setIsFetching] = useState(false);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
 
+  const [feedError, setFeedError] = useState<string | null>(null);
+
   // --- INTERSECTION OBSERVER ---
   // Hook này sẽ báo cho chúng ta biết khi nào phần tử dưới cùng xuất hiện trên màn hình
   const { ref, inView } = useInView({
@@ -51,6 +55,7 @@ export default function ProfileFeedSection({
 
       try {
         setIsFetching(true);
+        if (isReset) setFeedError(null);
         const queryParams: PostQueryParameters = {
           page: currentPage,
           limit: 5,
@@ -62,7 +67,7 @@ export default function ProfileFeedSection({
 
         const response = await postService.getUserPosts(userId, queryParams);
 
-        console.log(response)
+        console.log(response);
 
         const newPosts = response.data || [];
 
@@ -72,6 +77,17 @@ export default function ProfileFeedSection({
         setHasMore(currentPage < response.pagination!.totalPages);
       } catch (error) {
         console.error("Lỗi khi tải bài viết:", error);
+        const errorMessage = getFriendlyErrorMessage(error);
+
+        if (isReset) {
+          // Lỗi ngay lần tải đầu tiên hoặc khi đổi bộ lọc
+          setFeedError(errorMessage);
+        } else {
+          // Lỗi khi đang cuộn xem thêm
+          toast.error("Không thể tải thêm bài viết", {
+            description: errorMessage,
+          });
+        }
       } finally {
         setIsFetching(false);
         setIsInitialLoad(false);
@@ -160,6 +176,23 @@ export default function ProfileFeedSection({
           <div className="py-10 flex justify-center bg-white rounded-lg border border-gray-200 shadow-sm">
             <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
           </div>
+        ) : feedError ? (
+          // HIỂN THỊ GIAO DIỆN LỖI KHI TẢI TRANG/ĐỔI BỘ LỌC THẤT BẠI
+          <div className="py-12 flex flex-col items-center justify-center bg-white rounded-lg border border-gray-200 shadow-sm text-center px-4">
+            <div className="w-14 h-14 bg-red-50 text-red-500 rounded-full flex items-center justify-center mb-3">
+              <span className="text-xl font-bold">!</span>
+            </div>
+            <h3 className="text-[17px] font-semibold text-gray-900 mb-1">
+              Không thể tải bài viết
+            </h3>
+            <p className="text-gray-500 text-sm mb-4">{feedError}</p>
+            <button
+              onClick={() => fetchPosts(1, true)}
+              className="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-lg transition-colors text-sm"
+            >
+              Thử lại
+            </button>
+          </div>
         ) : posts.length > 0 ? (
           // Render danh sách PostCard
           posts.map((post) => <PostCard key={post.id} post={post} />)
@@ -181,7 +214,7 @@ export default function ProfileFeedSection({
         </div>
       )}
 
-      {!hasMore && posts.length > 0 && (
+      {!hasMore && posts.length > 0 && !feedError && (
         <div className="py-6 text-center text-gray-500 text-sm font-medium">
           Bạn đã xem hết bài viết.
         </div>

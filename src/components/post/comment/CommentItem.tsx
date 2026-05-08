@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import CommentMenu from "./_components/CommentMenu";
 import CommentEditForm from "./_components/CommentEditForm";
 import { Link } from "react-router-dom";
+import { getFriendlyErrorMessage } from "@/utils/errorHandler";
 
 interface CommentItemProps {
   comment: Comment;
@@ -71,8 +72,11 @@ export default function CommentItem({
       await commentService.deleteComment(currentComment.id);
       setIsDeleted(true);
       toast.success("Đã xóa bình luận");
-    } catch {
-      toast.error("Không thể xóa bình luận này");
+    } catch (error){
+      const errorMessage = getFriendlyErrorMessage(error);
+      toast.error("Lỗi khi xóa bình luận", {
+        description: errorMessage,
+      });
     }
   };
 
@@ -86,8 +90,11 @@ export default function CommentItem({
       setCurrentComment(updatedCmt);
       setIsEditing(false);
       toast.success("Đã cập nhật bình luận");
-    } catch {
-      toast.error("Không thể sửa bình luận");
+    } catch (error) {
+      const errorMessage = getFriendlyErrorMessage(error);
+      toast.error("Lỗi khi cập nhật bình luận", {
+        description: errorMessage,
+      });
     } finally {
       setIsSaving(false);
     }
@@ -107,8 +114,11 @@ export default function CommentItem({
           20,
         );
         setReplies(res.data);
-      } catch {
-        toast.error("Lỗi khi tải phản hồi");
+      } catch (error) {
+        const errorMessage = getFriendlyErrorMessage(error);
+        toast.error("Lỗi khi tải phản hồi", {
+          description: errorMessage,
+        });
       } finally {
         setIsLoadingReplies(false);
       }

@@ -8,6 +8,8 @@ import UserAvatar from "../common/UserAvatar";
 import { Link } from "react-router-dom";
 import type { FriendUserResponse } from "@/types/friendship.type";
 import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "sonner";
+import { getFriendlyErrorMessage } from "@/utils/errorHandler";
 
 interface ProfileFriendsSectionProps {
   userId: string;
@@ -28,6 +30,7 @@ export default function ProfileFriendsSection({
   const [hasMore, setHasMore] = useState(true);
   const [isFetching, setIsFetching] = useState(false);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [pageError, setPageError] = useState<string | null>(null);
 
   const isFetchingRef = useRef(false);
   const { ref, inView } = useInView({ threshold: 0, rootMargin: "200px" });
@@ -63,6 +66,17 @@ export default function ProfileFriendsSection({
         setHasMore(currentPage < totalPages);
       } catch (error) {
         console.error("Lỗi tải danh sách:", error);
+        const errorMessage = getFriendlyErrorMessage(error);
+
+        if (isReset) {
+          // Lỗi ngay lần đầu tải (chưa có data) -> Lưu vào state để in ra màn hình
+          setPageError(errorMessage);
+        } else {
+          // Lỗi khi đang cuộn trang để xem thêm -> Hiện Toast
+          toast.error("Không thể tải thêm danh sách", {
+            description: errorMessage,
+          });
+        }
       } finally {
         isFetchingRef.current = false;
         setIsFetching(false);
@@ -96,7 +110,10 @@ export default function ProfileFriendsSection({
       await friendshipService.acceptRequest(requesterId);
       setUsersList((prev) => prev.filter((u) => u.userId !== requesterId));
     } catch (error) {
-      console.error("Lỗi khi chấp nhận:", error);
+      const errorMessage = getFriendlyErrorMessage(error);
+      toast.error("Không thể chấp nhận lời mời", {
+        description: errorMessage,
+      });
     }
   };
 
@@ -105,7 +122,10 @@ export default function ProfileFriendsSection({
       await friendshipService.removeFriendship(requesterId);
       setUsersList((prev) => prev.filter((u) => u.userId !== requesterId));
     } catch (error) {
-      console.error("Lỗi khi xóa:", error);
+      const errorMessage = getFriendlyErrorMessage(error);
+      toast.error("Lỗi không thể từ chối lời mời", {
+        description: errorMessage,
+      });
     }
   };
 
@@ -161,7 +181,20 @@ export default function ProfileFriendsSection({
 
       {/* 3. DANH SÁCH BẠN BÈ / LỜI MỜI */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-6">
-        {isInitialLoad ? (
+        {pageError ? (
+          <div className="col-span-full py-12 flex flex-col items-center justify-center text-center">
+            <div className="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mb-4">
+              <Users className="w-8 h-8" />
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-1">
+              Không thể tải danh sách
+            </h3>
+            <p className="text-gray-500 max-w-sm mb-4">{pageError}</p>
+            <Button onClick={() => fetchData(1, true)} variant="outline">
+              Thử lại ngay
+            </Button>
+          </div>
+        ) : isInitialLoad ? (
           <div className="col-span-full py-10 flex justify-center">
             <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
           </div>

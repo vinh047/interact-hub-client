@@ -33,6 +33,8 @@ export default function PostModal() {
   const [comments, setComments] = useState<Comment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  const [pageError, setPageError] = useState<string | null>(null);
+
   // Chỉ còn lại đúng 1 state quản lý việc Reply
   const [replyingTo, setReplyingTo] = useState<{
     id: string;
@@ -54,12 +56,9 @@ export default function PostModal() {
         setComments(cmtRes.data);
       } catch (error) {
         const errorMessage = getFriendlyErrorMessage(error);
-
         console.log("Lỗi khi tải bài viết hoặc bình luận: ", errorMessage);
 
-        toast.error("Không thể tải bài viết", {
-          description: errorMessage,
-        });
+        setPageError(errorMessage);
         setIsLoadingPost(false);
       } finally {
         setIsLoading(false);
@@ -110,16 +109,28 @@ export default function PostModal() {
     );
   }
 
-  if (!post) {
+  if (pageError || !post) {
     return (
       <Dialog open={true} onOpenChange={handleClose}>
-        <DialogContent className="max-w-100 text-center rounded-xl">
-          <DialogTitle>Bài viết không tồn tại</DialogTitle>
+        <DialogContent className="max-w-[400px] text-center rounded-2xl p-8 flex flex-col items-center bg-white">
+          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+             {/* Icon X hoặc icon buồn */}
+            <X className="w-8 h-8 text-gray-400" />
+          </div>
+          
+          <DialogTitle className="text-xl font-bold text-gray-800">
+            {pageError ? "Không thể tải bài viết" : "Bài viết không tồn tại"}
+          </DialogTitle>
+          
+          <p className="text-gray-500 mt-2 text-[15px]">
+            {pageError || "Nội dung này có thể đã bị xóa hoặc bạn không có quyền truy cập."}
+          </p>
+          
           <button
             onClick={handleClose}
-            className="mt-4 text-blue-600 hover:underline"
+            className="mt-6 px-6 py-2.5 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition-colors w-full"
           >
-            Quay về trang chủ
+            Đóng và quay lại
           </button>
         </DialogContent>
       </Dialog>

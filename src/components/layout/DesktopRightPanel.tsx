@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import type { User } from "@/types/user.type";
 import { friendshipService } from "@/services/friendship.service";
 import { toast } from "sonner";
+import { getFriendlyErrorMessage } from "@/utils/errorHandler";
 
 interface TrendingTag {
   id: string;
@@ -23,6 +24,9 @@ export default function DesktopRightPanel() {
   const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(true);
 
   const [processingId, setProcessingId] = useState<string | null>(null);
+
+  const [trendingError, setTrendingError] = useState<string | null>(null);
+  const [suggestionsError, setSuggestionsError] = useState<string | null>(null);
 
   // Hàm fomat số lượng: 1200 -> 1.2K
   const formatScore = (score: number) => {
@@ -52,8 +56,11 @@ export default function DesktopRightPanel() {
       setSuggestions((prev) =>
         prev.map((u) => (u.id === userId ? { ...u, isRequester: true } : u)),
       );
-    } catch {
-      toast.error("Không thể gửi lời mời kết bạn.");
+    } catch (error) {
+      const errorMessage = getFriendlyErrorMessage(error);
+      toast.error("Không thể gửi lời mời kết bạn", {
+        description: errorMessage,
+      });
     } finally {
       setProcessingId(null); // Tắt loading
     }
@@ -71,8 +78,11 @@ export default function DesktopRightPanel() {
       setSuggestions((prev) =>
         prev.map((u) => (u.id === userId ? { ...u, isRequester: false } : u)),
       );
-    } catch {
-      toast.error("Không thể hủy lời mời.");
+    } catch (error) {
+      const errorMessage = getFriendlyErrorMessage(error);
+      toast.error("Không thể hủy lời mời", {
+        description: errorMessage,
+      });
     } finally {
       setProcessingId(null); // Tắt loading
     }
@@ -84,7 +94,8 @@ export default function DesktopRightPanel() {
         const data = await hashtagService.getTrendingHashtags();
         setTrendingTags(data);
       } catch (error) {
-        console.error("Lỗi khi tải trending hashtags:", error);
+        const errorMessage = getFriendlyErrorMessage(error);
+        setTrendingError(errorMessage); // Lưu vào state thay vì console.log
       } finally {
         setIsLoadingTrending(false);
       }
@@ -96,7 +107,8 @@ export default function DesktopRightPanel() {
         const res = await userService.getFriendSuggestions(1, 5);
         setSuggestions(res.data || []);
       } catch (error) {
-        console.error("Lỗi khi tải gợi ý kết bạn:", error);
+        const errorMessage = getFriendlyErrorMessage(error);
+        setSuggestionsError(errorMessage);
       } finally {
         setIsLoadingSuggestions(false);
       }
@@ -120,6 +132,18 @@ export default function DesktopRightPanel() {
         {isLoadingTrending ? (
           <div className="flex justify-center py-6">
             <Loader2 className="w-6 h-6 animate-spin text-blue-600" />
+          </div>
+        ) : trendingError ? (
+          <div className="text-center py-4 px-2 bg-red-50 rounded-xl mt-2 border border-red-100">
+            <p className="text-[13px] text-red-600 font-medium">
+              {trendingError}
+            </p>
+            <button
+              onClick={() => window.location.reload()}
+              className="text-[12px] text-blue-600 hover:underline mt-1 font-semibold"
+            >
+              Thử lại
+            </button>
           </div>
         ) : trendingTags.length > 0 ? (
           <div className="flex flex-col mt-2">
@@ -155,10 +179,21 @@ export default function DesktopRightPanel() {
             Gợi ý cho bạn
           </h3>
         </div>
-
         {isLoadingSuggestions ? (
           <div className="flex justify-center py-6">
             <Loader2 className="w-6 h-6 animate-spin text-blue-600" />
+          </div>
+        ) : suggestionsError ? (
+          <div className="text-center py-4 px-2 bg-red-50 rounded-xl mt-2 border border-red-100">
+            <p className="text-[13px] text-red-600 font-medium">
+              {suggestionsError}
+            </p>
+            <button
+              onClick={() => window.location.reload()}
+              className="text-[12px] text-blue-600 hover:underline mt-1 font-semibold"
+            >
+              Thử lại
+            </button>
           </div>
         ) : suggestions.length > 0 ? (
           <div className="flex flex-col gap-4">

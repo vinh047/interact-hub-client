@@ -14,6 +14,7 @@ import PostHeader from "./_components/PostHeader";
 import PostMedia from "./_components/PostMedia";
 import PostActions from "./_components/PostActions";
 import FormattedContent from "../common/FormattedContent";
+import { getFriendlyErrorMessage } from "@/utils/errorHandler";
 
 export default function PostCard({ post: initialPost }: { post: Post }) {
   const [post, setPost] = useState<Post>(initialPost);
@@ -59,10 +60,13 @@ export default function PostCard({ post: initialPost }: { post: Post }) {
       setIsLoadingLike(true);
       const result = await likeService.toggleLike(post.id);
       setIsLiked(result.isLiked);
-    } catch {
+    } catch (error) {
       setIsLiked(prevIsLiked);
       setLikeCount(prevCount);
-      toast.error("Không thể thực hiện thao tác.");
+      const errorMessage = getFriendlyErrorMessage(error);
+      toast.error("Không thể thích bài viết", {
+        description: errorMessage,
+      });
     } finally {
       setIsLoadingLike(false);
     }
@@ -94,8 +98,9 @@ export default function PostCard({ post: initialPost }: { post: Post }) {
       if (location.pathname.includes(`/post/${post.id}`))
         navigate("/", { replace: true });
       else setIsDeleted(true);
-    } catch {
-      toast.error("Không thể xóa bài viết lúc này.");
+    } catch (error) {
+      const errorMessage = getFriendlyErrorMessage(error);
+      toast.error(errorMessage);
       setIsDeleting(false);
     }
   };
@@ -150,7 +155,13 @@ export default function PostCard({ post: initialPost }: { post: Post }) {
             const freshPost = await postService.getPostById(post.id);
             setPost(freshPost);
           } catch (error) {
-            console.error("Lỗi khi tải lại bài viết:", error);
+            const errorMessage = getFriendlyErrorMessage(error);
+            toast.error(
+              "Không thể tải bài viết mới sau khi cập nhật",
+              {
+                description: errorMessage,
+              },
+            );
           }
         }}
       />

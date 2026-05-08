@@ -25,6 +25,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { getFriendlyErrorMessage } from "@/utils/errorHandler";
 
 interface ProfileHeaderProps {
   isCurrentUser: boolean;
@@ -88,8 +89,11 @@ export default function ProfileHeader({
       await friendshipService.sendRequest(userData.id);
       setStatus("Pending");
       setIsRequester(true);
-    } catch {
-      toast.error("Không thể gửi lời mời.");
+    } catch (error) {
+      const errorMessage = getFriendlyErrorMessage(error);
+      toast.error("Lỗi không thể gửi lời mời", {
+        description: errorMessage,
+      });
     } finally {
       setIsProcessing(false);
     }
@@ -101,8 +105,11 @@ export default function ProfileHeader({
       await friendshipService.acceptRequest(userData.id);
       setStatus("Accepted");
       toast.success("Đã trở thành bạn bè!");
-    } catch {
-      toast.error("Lỗi khi chấp nhận kết bạn.");
+    } catch (error) {
+      const errorMessage = getFriendlyErrorMessage(error);
+      toast.error("Lỗi khi chấp nhận kết bạn.", {
+        description: errorMessage,
+      });
     } finally {
       setIsProcessing(false);
     }
@@ -118,8 +125,11 @@ export default function ProfileHeader({
       await friendshipService.removeFriendship(userData.id);
       setStatus(null);
       setIsRequester(false);
-    } catch {
-      toast.error("Lỗi khi thực hiện thao tác.");
+    } catch (error) {
+      const errorMessage = getFriendlyErrorMessage(error);
+      toast.error("Lỗi khi thực hiện thao tác.", {
+        description: errorMessage,
+      });
     } finally {
       setIsProcessing(false);
     }

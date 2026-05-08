@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { friendshipService } from "@/services/friendship.service";
 import type { FriendUserResponse } from "@/types/friendship.type";
 import UserAvatar from "../common/UserAvatar";
+import { getFriendlyErrorMessage } from "@/utils/errorHandler";
+import { toast } from "sonner";
 
 export default function ProfileFriendsGrid({
   userId,
@@ -28,7 +30,10 @@ export default function ProfileFriendsGrid({
 
         setFriends(response.data || []);
       } catch (error) {
-        console.error("Lỗi khi tải danh sách bạn bè:", error);
+        const errorMessage = getFriendlyErrorMessage(error);
+        toast.error("Không thể tải danh sách bạn bè", {
+          description: errorMessage,
+        });
       } finally {
         setIsLoading(false);
       }

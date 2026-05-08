@@ -6,6 +6,7 @@ import { Check, Loader2, UserCheck, UserPlus, UserX } from "lucide-react";
 import { Link } from "react-router-dom";
 import UserAvatar from "../common/UserAvatar";
 import type { User } from "@/types/user.type";
+import { getFriendlyErrorMessage } from "@/utils/errorHandler";
 
 export default function UserResultItem({ user }: { user: User }) {
   // Lấy trạng thái ban đầu từ API Search trả về
@@ -42,8 +43,11 @@ export default function UserResultItem({ user }: { user: User }) {
         setIsRequester(true); // Đánh dấu mình là người gửi
         toast.success("Đã gửi yêu cầu kết bạn");
       }
-    } catch {
-      toast.error("Có lỗi xảy ra, vui lòng thử lại!");
+    } catch (error) {
+      const errorMessage = getFriendlyErrorMessage(error);
+      toast.error("Có lỗi xảy ra, vui lòng thử lại!", {
+        description: errorMessage,
+      });
     } finally {
       setIsActionLoading(false);
     }
