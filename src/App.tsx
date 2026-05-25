@@ -27,6 +27,7 @@ import ProfilePage from "./pages/ProfilePage";
 import HeaderOnlyLayout from "./layouts/HeaderOnlyLayout";
 import SearchPage from "./pages/SearchPage";
 import Explore from "./pages/Explore";
+import NotFound from "./pages/NotFound";
 
 function AppRoutes() {
   const location = useLocation();
@@ -65,7 +66,7 @@ function AppRoutes() {
           <Route path="/stories/:id" element={<StoryDetailPage />} />
         </Route>
 
-        <Route path="*" element={<Navigate to="/404" replace />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
 
       {/* ROUTER PHỤ (MODAL): Render đè lên nếu đang ở link bài viết */}
