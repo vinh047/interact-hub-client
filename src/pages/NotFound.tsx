@@ -1,14 +1,23 @@
 import { Link } from "react-router-dom";
-import Lottie from "lottie-react";
+import { useLottie } from "lottie-react";
 
 import tRexAnimation from "@/assets/404-page-not-found.json";
 
 export default function NotFound() {
+  const options = {
+    animationData: tRexAnimation,
+    loop: true,
+    autoplay: true,
+  };
+
+  // Hook sẽ tự động bọc animation vào một View hợp lệ của React
+  const { View } = useLottie(options);
+
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-white text-gray-800 px-4">
+    <div className="flex flex-col items-center justify-center max-h-[90vh] bg-white text-gray-800 px-4">
       {/* Animation từ file JSON */}
       <div className="w-full max-w-[500px]">
-        <Lottie animationData={tRexAnimation} loop={true} autoplay={true} />
+        {View}
       </div>
 
       {/* Nội dung thông báo */}
@@ -24,7 +33,7 @@ export default function NotFound() {
         {/* Nút quay về trang chủ */}
         <div className="mt-8">
           <Link
-            to= "/" 
+            to="/"
             className="inline-flex items-center justify-center px-6 py-3 text-base font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1"
           >
             Về trang chủ
